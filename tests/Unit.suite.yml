@@ -6,4 +6,5 @@ actor: UnitTester
 modules:
     enabled:
         - Asserts
+        - Tests\Support\Helper\Faker
 step_decorators: ~
