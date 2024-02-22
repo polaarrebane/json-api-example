@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ruleset name="Ishual Books CS">
+    <file>./src</file>
+    <rule ref="PSR12"/>
+</ruleset>
