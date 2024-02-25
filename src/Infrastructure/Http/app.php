@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 include __DIR__ . '/../../../vendor/autoload.php';
 
+use App\Infrastructure\Http\Controller\BookController;
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 
@@ -19,5 +20,7 @@ $container = (new ContainerBuilder())
     ->build();
 
 $slim = Bridge::create($container);
+
+$slim->post('/books', [BookController::class, 'create']);
 
 $slim->run();
