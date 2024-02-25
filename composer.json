@@ -21,7 +21,8 @@
     "cycle/orm": "^2.7",
     "cycle/annotated": "^4.1",
     "vlucas/phpdotenv": "^5.6",
-    "webmozart/assert": "^1.11"
+    "webmozart/assert": "^1.11",
+    "league/config": "^1.2"
   },
   "autoload": {
     "psr-4": {
