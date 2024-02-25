@@ -20,7 +20,8 @@
     "ramsey/uuid": "^4.7",
     "cycle/orm": "^2.7",
     "cycle/annotated": "^4.1",
-    "vlucas/phpdotenv": "^5.6"
+    "vlucas/phpdotenv": "^5.6",
+    "webmozart/assert": "^1.11"
   },
   "autoload": {
     "psr-4": {
