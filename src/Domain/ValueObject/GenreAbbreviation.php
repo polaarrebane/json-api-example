@@ -30,4 +30,9 @@ readonly class GenreAbbreviation extends AbstractValueObject
     {
         return ($valueObject::class === self::class) && ($this->genreEnum === $valueObject->genreEnum);
     }
+
+    public function __toString(): string
+    {
+        return $this->genreEnum->value;
+    }
 }

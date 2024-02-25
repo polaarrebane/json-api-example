@@ -33,4 +33,9 @@ readonly class BookId extends AbstractValueObject
     {
         return ($valueObject::class === self::class) && ($this->uuid->equals($valueObject->uuid));
     }
+
+    public function __toString()
+    {
+        return $this->uuid->toString();
+    }
 }

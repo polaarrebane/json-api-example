@@ -7,4 +7,6 @@ modules:
     enabled:
         - Asserts
         - Tests\Support\Helper\Faker
+        - Tests\Support\Helper\Factory
+        - Tests\Support\Helper\Container
 step_decorators: ~
