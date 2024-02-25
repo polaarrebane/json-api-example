@@ -6,6 +6,6 @@ A simple API compatible with the [JSON:API standard](https://jsonapi.org/).
 * slim
 * php-di
 * ecotone
-* valinor
+* valinor & webmozarts
 * cycle orm
 * codeception
