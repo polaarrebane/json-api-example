@@ -6,7 +6,7 @@ namespace App\Application\Command;
 
 use App\Domain\ValueObject\BookId;
 
-readonly class ModifyAttributesOfBook
+readonly class ModifyAttributesOfBook implements CommandInterface
 {
     public function __construct(
         public BookId $bookId,
