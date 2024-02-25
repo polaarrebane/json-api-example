@@ -53,7 +53,7 @@ class Book
             id: $this->bookId->get(),
             title: $this->title->get(),
             description: $this->description->get(),
-            cover: $this->description->get(),
+            cover: $this->cover->get(),
             authors: array_map(static fn(AuthorId $authorId) => $authorId->get(), $this->authors),
             genres: array_map(static fn(GenreAbbreviation $genreAbbreviation) => $genreAbbreviation->get(), $this->genres),
             tags: array_map(static fn(TagValue $tagValue) => $tagValue->get(), $this->tags),
