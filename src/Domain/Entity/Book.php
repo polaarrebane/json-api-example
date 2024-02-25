@@ -6,6 +6,7 @@ namespace App\Domain\Entity;
 
 use App\Application\Command\AddNewBook;
 use App\Application\Command\ModifyAttributesOfBook;
+use App\Application\Query\RetrieveBook;
 use App\Domain\Dto\BookDto;
 use App\Domain\Event\Book\AuthorsOfBookWasModified;
 use App\Domain\Event\Book\BookWasCreated;
@@ -24,6 +25,7 @@ use App\Domain\ValueObject\TagValue;
 use Ecotone\Modelling\Attribute\Aggregate;
 use Ecotone\Modelling\Attribute\CommandHandler;
 use Ecotone\Modelling\Attribute\Identifier;
+use Ecotone\Modelling\Attribute\QueryHandler;
 use Ecotone\Modelling\WithEvents;
 
 #[Aggregate]
@@ -111,6 +113,12 @@ class Book
         }
 
         return $this;
+    }
+
+    #[QueryHandler]
+    public function retrieveBook(RetrieveBook $query): BookDto
+    {
+        return $this->toDto();
     }
 
     public function getBookId(): BookId
