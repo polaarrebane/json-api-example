@@ -7,23 +7,24 @@ namespace App\Infrastructure\Http\Response;
 use App\Domain\Dto\BookDto;
 use App\Domain\Dto\DtoInterface;
 use App\Infrastructure\Http\Response\Component\Relationship;
+use Override;
 
 class BookSuccessResponse extends AbstractSuccessResponse
 {
     /** @var BookDto */
     protected DtoInterface|BookDto $dto;
 
-    #[\Override] protected function id(): string
+    #[Override] protected function id(): string
     {
         return $this->dto->id;
     }
 
-    #[\Override] protected function type(): string
+    #[Override] protected function type(): string
     {
         return 'books';
     }
 
-    #[\Override] protected function getAttributes(): array
+    #[Override] protected function getAttributes(): array
     {
         return [
             'title' => $this->dto->title,
@@ -33,7 +34,7 @@ class BookSuccessResponse extends AbstractSuccessResponse
         ];
     }
 
-    #[\Override] protected function getRelationships(): array
+    #[Override] protected function getRelationships(): array
     {
         return [
             'authors' => (new Relationship(

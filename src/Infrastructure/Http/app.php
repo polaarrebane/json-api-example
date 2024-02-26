@@ -13,7 +13,7 @@ const PATH_TO_CONFIG = __DIR__ . '/../../../config/';
 (Dotenv\Dotenv::createImmutable(__DIR__ . '/../../..'))->load();
 
 $container = (new ContainerBuilder())
-    ->addDefinitions(PATH_TO_CONFIG . 'autowire.php')
+    ->addDefinitions(PATH_TO_CONFIG . 'autowiring.php')
     ->addDefinitions(PATH_TO_CONFIG . 'ecotone.php')
     ->addDefinitions(PATH_TO_CONFIG . 'app.php')
     ->useAttributes(true)
