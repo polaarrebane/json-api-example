@@ -20,7 +20,16 @@
     "ramsey/uuid": "^4.7",
     "cycle/orm": "^2.7",
     "cycle/annotated": "^4.1",
-    "vlucas/phpdotenv": "^5.6"
+    "vlucas/phpdotenv": "^5.6",
+    "webmozart/assert": "^1.11",
+    "league/config": "^1.2",
+    "teapot/status-code": "^2.3",
+    "symfony/console": "^7.0",
+    "cycle/migrations": "^4.2",
+    "cycle/schema-migrations-generator": "^2.2",
+    "cycle/schema-builder": "^2.8",
+    "cycle/entity-behavior-uuid": "^1.2",
+    "cycle/database": "^2.8"
   },
   "autoload": {
     "psr-4": {

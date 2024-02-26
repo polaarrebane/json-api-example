@@ -3,3 +3,5 @@
 /.fleet/
 /.vscode/
 .env
+/runtime/
+/database/schema.json

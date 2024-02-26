@@ -16,7 +16,7 @@ readonly class TagValue extends AbstractValueObject
         return new self($value);
     }
 
-    public function get(): string
+    #[\Override] public function get(): string
     {
         return $this->tag;
     }

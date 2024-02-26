@@ -16,7 +16,7 @@ readonly class BookTitle extends AbstractValueObject
         return new self($value);
     }
 
-    public function get(): string
+    #[\Override] public function get(): string
     {
         return $this->title;
     }

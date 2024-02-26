@@ -259,4 +259,15 @@ enum GenreEnum: string
             self::home => 'Other',
         };
     }
+
+    /**
+     * @return string[]
+     */
+    public static function values(): array
+    {
+        return array_map(
+            static fn(self $type) => $type->value,
+            self::cases()
+        );
+    }
 }

@@ -6,6 +6,7 @@ namespace App\Domain\Entity;
 
 use App\Application\Command\AddNewAuthor;
 use App\Application\Command\ModifyAttributesOfAuthor;
+use App\Application\Query\RetrieveAuthor;
 use App\Domain\Dto\AuthorDto;
 use App\Domain\Event\Author\AuthorWasCreated;
 use App\Domain\Event\Author\NameOfAuthorWasModified;
@@ -14,6 +15,7 @@ use App\Domain\ValueObject\AuthorName;
 use Ecotone\Modelling\Attribute\Aggregate;
 use Ecotone\Modelling\Attribute\CommandHandler;
 use Ecotone\Modelling\Attribute\Identifier;
+use Ecotone\Modelling\Attribute\QueryHandler;
 use Ecotone\Modelling\WithEvents;
 
 #[Aggregate]
@@ -51,6 +53,12 @@ class Author
         }
 
         return $this;
+    }
+
+    #[QueryHandler]
+    public function retrieveAuthor(RetrieveAuthor $query): AuthorDto
+    {
+        return $this->toDto();
     }
 
     public function getAuthorId(): AuthorId
