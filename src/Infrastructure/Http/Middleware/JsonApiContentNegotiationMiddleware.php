@@ -12,9 +12,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class JsonApiContentNegotiationMiddleware
 {
-    protected const HEADER_ACCEPT = 'Accept';
-    protected const HEADER_CONTENT_TYPE = 'Content-Type';
-    protected const HEADER_VALUE = 'application/vnd.api+json';
+    protected const string HEADER_ACCEPT = 'Accept';
+    protected const string HEADER_CONTENT_TYPE = 'Content-Type';
+    protected const string HEADER_VALUE = 'application/vnd.api+json';
 
     public function __invoke(Request $request, RequestHandler $handler): Response
     {

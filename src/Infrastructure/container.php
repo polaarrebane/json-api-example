@@ -13,6 +13,7 @@ const PATH_TO_CONFIG = __DIR__ . '/../../config/';
 $container = (new ContainerBuilder())
     ->addDefinitions(PATH_TO_CONFIG . 'autowiring.php')
     ->addDefinitions(PATH_TO_CONFIG . 'ecotone.php')
+    ->addDefinitions(PATH_TO_CONFIG . 'database.php')
     ->addDefinitions(PATH_TO_CONFIG . 'app.php')
     ->useAttributes(true)
     ->build();
