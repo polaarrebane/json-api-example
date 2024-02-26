@@ -21,12 +21,12 @@ readonly class GenreAbbreviation extends AbstractValueObject
         return new self($value);
     }
 
-    public function get(): string
+    #[\Override] public function get(): string
     {
         return $this->genreEnum->value;
     }
 
-    public function isEqualTo(self|ValueObjectInterface $valueObject): bool
+    #[\Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
     {
         return ($valueObject::class === self::class) && ($this->genreEnum === $valueObject->genreEnum);
     }

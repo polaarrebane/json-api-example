@@ -24,12 +24,12 @@ readonly class BookId extends AbstractValueObject
         return new self(Uuid::fromString($uuid));
     }
 
-    public function get(): string
+    #[\Override] public function get(): string
     {
         return $this->uuid->toString();
     }
 
-    public function isEqualTo(self|ValueObjectInterface $valueObject): bool
+    #[\Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
     {
         return ($valueObject::class === self::class) && ($this->uuid->equals($valueObject->uuid));
     }

@@ -21,7 +21,7 @@ readonly class GenreDescription extends AbstractValueObject
         return new self(GenreEnum::from($genreAbbreviation->get())->description());
     }
 
-    public function get(): string
+    #[\Override] public function get(): string
     {
         return $this->genreDescription;
     }
