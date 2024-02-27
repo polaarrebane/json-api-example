@@ -1,0 +1,46 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\BookAuthor\\:\\:\\$id is unused\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/BookAuthor.php
+
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\BookGenre\\:\\:\\$id is unused\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/BookGenre.php
+
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\BookTag\\:\\:\\$id is unused\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/BookTag.php
+
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\Genre\\:\\:\\$id is unused\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/Genre.php
+
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\Tag\\:\\:\\$id is never written, only read\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/Tag.php
+
+		-
+			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\User\\:\\:\\$id is unused\\.$#"
+			count: 1
+			path: src/Infrastructure/Database/Entity/User.php
+
+		-
+			message: "#^Call to an undefined method Cycle\\\\ORM\\\\RepositoryInterface\\<TEntity of object\\>\\:\\:select\\(\\)\\.$#"
+			count: 3
+			path: src/Infrastructure/Database/Service/BookSqlWriteService.php
+
+		-
+			message: "#^Constructor of class App\\\\Infrastructure\\\\Http\\\\Validator\\\\RequestValidator has an unused parameter \\$authorService\\.$#"
+			count: 1
+			path: src/Infrastructure/Http/Validator/RequestValidator.php
+
+		-
+			message: "#^Match expression does not handle remaining value\\: class\\-string\\<App\\\\Infrastructure\\\\Http\\\\Request\\\\RequestInterface\\>&literal\\-string$#"
+			count: 1
+			path: src/Infrastructure/Http/Validator/RequestValidator.php
