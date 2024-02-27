@@ -30,4 +30,19 @@ class Genre
         $this->abbreviation = $abbreviation;
         $this->description = $description;
     }
+
+    public function getAbbreviation(): string
+    {
+        return $this->abbreviation;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
 }
