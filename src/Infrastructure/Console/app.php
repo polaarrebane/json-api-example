@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Infrastructure\Console\Command\LoadGenres;
 use App\Infrastructure\Console\Command\MigrationCompile;
 use App\Infrastructure\Console\Command\MigrationRollback;
 use App\Infrastructure\Console\Command\MigrationRun;
@@ -16,5 +17,6 @@ $application->add($container->get(MigrationCompile::class));
 $application->add($container->get(MigrationRun::class));
 $application->add($container->get(MigrationRollback::class));
 $application->add($container->get(SchemaDump::class));
+$application->add($container->get(LoadGenres::class));
 
 $application->run();

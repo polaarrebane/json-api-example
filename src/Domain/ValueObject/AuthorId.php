@@ -14,9 +14,9 @@ readonly class AuthorId extends AbstractValueObject
         parent::__construct($this->uuid);
     }
 
-    public static function fromUuid(): self
+    public static function fromUuid(?UuidInterface $uuid = null): self
     {
-        return new self(Uuid::uuid4());
+        return new self($uuid ?? Uuid::uuid4());
     }
 
     public static function fromString(string $uuid): self
@@ -24,9 +24,9 @@ readonly class AuthorId extends AbstractValueObject
         return new self(Uuid::fromString($uuid));
     }
 
-    public function __toString()
+    public function toUuid(): UuidInterface
     {
-        return $this->uuid->toString();
+        return $this->uuid;
     }
 
     #[\Override] public function get(): string
@@ -37,5 +37,10 @@ readonly class AuthorId extends AbstractValueObject
     #[\Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
     {
         return ($valueObject::class === self::class) && ($this->uuid->equals($valueObject->uuid));
+    }
+
+    public function __toString()
+    {
+        return $this->uuid->toString();
     }
 }
