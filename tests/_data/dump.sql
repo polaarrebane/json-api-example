@@ -26,13 +26,13 @@ create table book_authors
             on update cascade on delete cascade
 );
 
-create index book_authors_index_author_uuid_65debafb45057
+create index book_authors_index_author_uuid_65df23d875a65
     on book_authors (author_uuid);
 
-create index book_authors_index_book_uuid_65debafb45051
+create index book_authors_index_book_uuid_65df23d875a4e
     on book_authors (book_uuid);
 
-create unique index book_authors_index_book_uuid_author_uuid_65debafb4504b
+create unique index book_authors_index_book_uuid_author_uuid_65df23d875a3a
     on book_authors (book_uuid, author_uuid);
 
 create table genres
@@ -55,16 +55,16 @@ create table book_genres
             on update cascade on delete cascade
 );
 
-create index book_genres_index_book_uuid_65debafb45023
+create index book_genres_index_book_uuid_65df23d8759b5
     on book_genres (book_uuid);
 
-create unique index book_genres_index_book_uuid_genre_id_65debafb4501c
+create unique index book_genres_index_book_uuid_genre_id_65df23d87599f
     on book_genres (book_uuid, genre_id);
 
-create index book_genres_index_genre_id_65debafb4502a
+create index book_genres_index_genre_id_65df23d8759cc
     on book_genres (genre_id);
 
-create unique index genres_index_abbreviation_65debafb450bc
+create unique index genres_index_abbreviation_65df23d875b37
     on genres (abbreviation);
 
 create table migrations
@@ -76,7 +76,7 @@ create table migrations
     created_at    datetime
 );
 
-create unique index migrations_index_migration_created_at_65dde0e400c6d
+create unique index migrations_index_migration_created_at_65df23f025c26
     on migrations (migration, created_at);
 
 create table tags
@@ -98,17 +98,19 @@ create table book_tags
             on update cascade on delete cascade
 );
 
-create index book_tags_index_book_uuid_65debafb44fec
+create index book_tags_index_book_uuid_65df23d875912
     on book_tags (book_uuid);
 
-create unique index book_tags_index_book_uuid_tag_id_65debafb44f31
+create unique index book_tags_index_book_uuid_tag_id_65df23d875828
     on book_tags (book_uuid, tag_id);
 
-create index book_tags_index_tag_id_65debafb44ff8
+create index book_tags_index_tag_id_65df23d87592e
     on book_tags (tag_id);
 
-create unique index tags_index_value_65debafb450ae
+create unique index tags_index_value_65df23d875b0b
     on tags (value);
+
+
 
 INSERT INTO genres (id, abbreviation, description) VALUES (1, 'sf_history', 'Alternative history');
 INSERT INTO genres (id, abbreviation, description) VALUES (2, 'sf_action', 'Action');

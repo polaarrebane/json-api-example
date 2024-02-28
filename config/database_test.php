@@ -21,7 +21,7 @@ $dbConfig = new Config\DatabaseConfig([
     'connections' => [
         'sqlite_test_file' => new Config\SQLiteDriverConfig(
             connection: new Config\SQLite\FileConnectionConfig(
-                database: __DIR__ . '/../runtime/database.tests.sqlite'
+                database: __DIR__ . '/../runtime/database.tests.sqlite',
             ),
             queryCache: false,
         ),

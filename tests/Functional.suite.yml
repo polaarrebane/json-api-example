@@ -1,6 +1,7 @@
 actor: FunctionalTester
 modules:
     enabled:
+        - Asserts
         - Db:
             dsn: 'sqlite:runtime/database.tests.sqlite'
             user: ''

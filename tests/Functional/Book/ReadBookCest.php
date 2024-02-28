@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Functional\Book;
+
+use App\Application\Query\RetrieveBook;
+use App\Domain\Dto\BookDto;
+use Codeception\Attribute\DataProvider;
+use Codeception\Attribute\Group;
+use Tests\Support\FunctionalTester;
+
+#[Group('book')]
+class ReadBookCest
+{
+    #[DataProvider('bookProvider')]
+    public function tryToReadBook(FunctionalTester $I, \Codeception\Example $example)
+    {
+        $bookId = $example['uuid'];
+
+        $I->haveInDatabase('books', [
+            'uuid' => $bookId,
+            'title' => $example['title'],
+            'description' => $example['description'],
+            'cover' => $example['cover'],
+        ]);
+
+        foreach ($example['authors'] as $id => $author) {
+            $I->haveInDatabase('authors', ['uuid' => $author['uuid'], 'name' => $author['name']]);
+            $I->haveInDatabase('book_authors', ['id' => $id + 1, 'book_uuid' => $bookId, 'author_uuid' => $author['uuid']]);
+        }
+
+        foreach ($example['genres'] as $genre) {
+            $genreId = $I->grabFromDatabase('genres', 'id', ['abbreviation' => $genre]);
+            $I->haveInDatabase('book_genres', ['book_uuid' => $bookId, 'genre_id' => $genreId]);
+        }
+
+        foreach ($example['tags'] as $id => $tag) {
+            $I->haveInDatabase('tags', ['id' => $id + 1, 'value' => $tag]);
+            $I->haveInDatabase('book_tags', ['book_uuid' => $bookId, 'tag_id' => $id + 1]);
+        }
+
+        /** @var BookDto $bookDto */
+        $bookDto = $I->sendQuery(RetrieveBook::fromBookId($bookId));
+
+        $I->assertEquals($bookId, $bookDto->id);
+        $I->assertEquals($example['title'], $bookDto->title);
+        $I->assertEquals($example['description'], $bookDto->description);
+        $I->assertEquals($example['cover'], $bookDto->cover);
+        $I->assertEqualsCanonicalizing(array_column($example['authors'], 'uuid'), $bookDto->authors);
+        $I->assertEqualsCanonicalizing($example['genres'], $bookDto->genres);
+        $I->assertEqualsCanonicalizing($example['tags'], $bookDto->tags);
+    }
+
+    protected function bookProvider(): array
+    {
+        return [
+            'Game of Thrones, or There and Back Again' => [
+                'uuid' => '89302b6f-4749-44b9-aa6a-9e0c5cc7477c',
+                'title' => 'Game of Thrones, or There and Back Again',
+                'description' => <<<Description
+                                In this ingenious fusion of epic fantasy and adventure, renowned author J.R.R. Martolkien 
+                                weaves a tale that traverses realms, blending the intricate politics of Westeros with 
+                                the whimsical adventures of the Shire. "Game of Thrones, or There and Back Again" transports
+                                readers to a world where dragons soar overhead and hobbits tread cautiously through the lush
+                                greenery of their homeland.
+                                
+                                From the scheming halls of King's Landing to the quaint villages of the Shire, the journey 
+                                is fraught with danger, hilarity, and the occasional misplaced wizard. Along the way, our 
+                                heroes encounter a colorful cast of characters, including a talking direwolf with a penchant
+                                for sarcasm and a band of bumbling knights whose loyalty is matched only by their ineptitude.    
+                                Description,
+                'cover' => 'http://localhost/images/covers/1.webp',
+                'authors' => [
+                    [
+                        'uuid' => '8ef0bf00-e2b6-4a2b-8bda-a209e8eaefc2',
+                        'name' => 'John Ronald Reuel Tolkien',
+                    ],
+                    [
+                        'uuid' => '0994e049-8c39-426a-aa05-6daceb4ebf8b',
+                        'name' => 'George Raymond Richard Martin',
+                    ]
+                ],
+                'genres' => [
+                    'sf_action',
+                    'sf_fantasy',
+                ],
+                'tags' => [
+                    'martolkien',
+                    'journey'
+                ]
+            ]
+        ];
+    }
+}
