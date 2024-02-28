@@ -8,5 +8,5 @@ modules:
         - Asserts
         - Tests\Support\Helper\Faker
         - Tests\Support\Helper\Factory
-        - Tests\Support\Helper\Container
+        - Tests\Support\Helper\ContainerUnit
 step_decorators: ~

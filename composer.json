@@ -51,6 +51,7 @@
     "fakerphp/faker": "^1.23",
     "haydenpierce/class-finder": "^0.5.3",
     "codeception/module-asserts": "^3.0",
-    "codeception/module-phpbrowser": "^3.0"
+    "codeception/module-phpbrowser": "^3.0",
+    "codeception/module-db": "^3.1"
   }
 }
