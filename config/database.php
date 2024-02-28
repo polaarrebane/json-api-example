@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Cycle\Database;
+use App\Infrastructure\Database\Util\SchemaCompiler;
 use Cycle\Database\Config;
 use Cycle\Database\DatabaseManager;
 use Cycle\Migrations\Config\MigrationConfig;
@@ -37,11 +37,14 @@ return [
     DatabaseManager::class => static fn() => new DatabaseManager($dbConfig),
 
     ORM::class => static function (ContainerInterface $container) {
-        $schemaDump = file_get_contents(__DIR__ . '/../database/schema.json');
+        $pathToDump = __DIR__ . '/../database/schema.json';
+        $schema = file_exists($pathToDump)
+            ? json_decode(file_get_contents($pathToDump), true, 512, JSON_THROW_ON_ERROR)
+            : ($container->get(SchemaCompiler::class))();
 
         return new ORM(
             new Factory($container->get(DatabaseManager::class)),
-            new Schema(json_decode($schemaDump, true, 512, JSON_THROW_ON_ERROR))
+            new Schema($schema)
         );
     },
 
@@ -52,8 +55,8 @@ return [
     Migrator::class =>  static function (ContainerInterface $container) {
         $config = new MigrationConfig([
             'directory' => __DIR__ . '/../database/migrations/',    // where to store migrations
-            'table'     => 'migrations',                   // database table to store migration status
-            'safe'      => true                            // When set to true no confirmation will be requested on migration run.
+            'table'     => 'migrations',                            // database table to store migration status
+            'safe'      => true                                     // When set to true no confirmation will be requested on migration run.
         ]);
 
         $migrator = new Migrator($config, $container->get(DatabaseManager::class), new FileRepository($config));

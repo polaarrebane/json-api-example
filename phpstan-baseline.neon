@@ -26,11 +26,6 @@ parameters:
 			path: src/Infrastructure/Database/Entity/Tag.php
 
 		-
-			message: "#^Property App\\\\Infrastructure\\\\Database\\\\Entity\\\\User\\:\\:\\$id is unused\\.$#"
-			count: 1
-			path: src/Infrastructure/Database/Entity/User.php
-
-		-
 			message: "#^Call to an undefined method Cycle\\\\ORM\\\\RepositoryInterface\\<TEntity of object\\>\\:\\:select\\(\\)\\.$#"
 			count: 3
 			path: src/Infrastructure/Database/Service/BookSqlWriteService.php

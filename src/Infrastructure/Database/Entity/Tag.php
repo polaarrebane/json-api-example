@@ -7,7 +7,6 @@ namespace App\Infrastructure\Database\Entity;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use Cycle\Annotated\Annotation\Table\Index;
-use Cycle\ORM\Entity\Behavior\Uuid\Uuid4;
 
 #[Entity]
 #[Index(columns: ['value'], unique: true)]
