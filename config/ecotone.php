@@ -23,6 +23,4 @@ return [
 
     QueryBus::class =>
         static fn(ContainerInterface $container) => $container->get('ecotone')->getQueryBus(),
-
-
 ];

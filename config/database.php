@@ -8,10 +8,10 @@ use Cycle\Database\DatabaseManager;
 use Cycle\Migrations\Config\MigrationConfig;
 use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
-use Cycle\ORM\EntityManager;
 use Cycle\ORM\Factory;
+use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\Schema;
-use Cycle\ORM\ORM;
+use Cycle\ORM\SchemaInterface;
 use Psr\Container\ContainerInterface;
 
 // https://cycle-orm.dev/docs/database-connect/current/en
@@ -36,21 +36,16 @@ $dbConfig = new Config\DatabaseConfig([
 return [
     DatabaseManager::class => static fn() => new DatabaseManager($dbConfig),
 
-    ORM::class => static function (ContainerInterface $container) {
+    SchemaInterface::class => static function (ContainerInterface $container) {
         $pathToDump = __DIR__ . '/../database/schema.json';
         $schema = file_exists($pathToDump)
             ? json_decode(file_get_contents($pathToDump), true, 512, JSON_THROW_ON_ERROR)
             : ($container->get(SchemaCompiler::class))();
 
-        return new ORM(
-            new Factory($container->get(DatabaseManager::class)),
-            new Schema($schema)
-        );
+        return new Schema($schema);
     },
 
-    EntityManager::class => static function (ContainerInterface $container) {
-        return new EntityManager($container->get(ORM::class));
-    },
+    FactoryInterface::class => static fn(ContainerInterface $container) => new Factory($container->get(DatabaseManager::class)),
 
     Migrator::class =>  static function (ContainerInterface $container) {
         $config = new MigrationConfig([

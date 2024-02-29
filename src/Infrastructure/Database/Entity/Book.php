@@ -29,19 +29,19 @@ class Book
     /**
      * @var Tag[]
      */
-    #[ManyToMany(target: Tag::class, through: BookTag::class, fkOnDelete: 'CASCADE', load: 'eager')]
+    #[ManyToMany(target: Tag::class, through: BookTag::class, cascade: true, fkOnDelete: 'CASCADE', load: 'eager')]
     protected array $tags;
 
     /**
      * @var Genre[]
      */
-    #[ManyToMany(target: Genre::class, through: BookGenre::class, fkOnDelete: 'CASCADE', load: 'eager')]
+    #[ManyToMany(target: Genre::class, through: BookGenre::class, cascade: true, fkOnDelete: 'CASCADE', load: 'eager')]
     protected array $genres;
 
     /**
      * @var Author[]
      */
-    #[ManyToMany(target: Author::class, through: BookAuthor::class, fkOnDelete: 'CASCADE', load: 'eager')]
+    #[ManyToMany(target: Author::class, through: BookAuthor::class, cascade: true, fkOnDelete: 'CASCADE', load: 'eager')]
     protected array $authors;
 
     /**

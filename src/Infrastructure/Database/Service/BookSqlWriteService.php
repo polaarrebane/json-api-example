@@ -19,19 +19,32 @@ use Cycle\ORM\ORM;
 class BookSqlWriteService
 {
     public function __construct(
-        protected EntityManager $em,
-        protected ORM $orm,
+        protected \DI\Container $container,
     ) {
     }
 
     public function persist(BookDomainEntity $bookDomainEntity): void
     {
-        $bookDbEntity = new BookDbEntity(
-            id: $bookDomainEntity->getBookId()->toUuid(),
-            title: $bookDomainEntity->getTitle()->get(),
-            description: $bookDomainEntity->getDescription()->get(),
-            cover: $bookDomainEntity->getCover()->get(),
-        );
+        $orm = $this->container->make(ORM::class);
+        $em = new EntityManager($orm);
+
+        /** @var ?BookDbEntity $bookDbEntity */
+        $bookDbEntity = $orm
+            ->getRepository(BookDbEntity::class)
+            ->findByPK($bookDomainEntity->getBookId()->toUuid());
+
+        if (is_null($bookDbEntity)) {
+            $bookDbEntity = new BookDbEntity(
+                id: $bookDomainEntity->getBookId()->toUuid(),
+                title: $bookDomainEntity->getTitle()->get(),
+                description: $bookDomainEntity->getDescription()->get(),
+                cover: $bookDomainEntity->getCover()->get(),
+            );
+        } else {
+            $bookDbEntity->setTitle($bookDomainEntity->getTitle()->get());
+            $bookDbEntity->setDescription($bookDomainEntity->getDescription()->get());
+            $bookDbEntity->setCover($bookDomainEntity->getCover()->get());
+        }
 
         $authorIds = array_map(
             static fn(AuthorId $authorId) => $authorId->get(),
@@ -48,17 +61,17 @@ class BookSqlWriteService
             $bookDomainEntity->getTags()
         );
 
-        $authors = $this->orm->getRepository(Author::class)
+        $authors = $orm->getRepository(Author::class)
             ->select()
             ->where('uuid', 'in', new Parameter($authorIds))
             ->fetchAll();
 
-        $genres = $this->orm->getRepository(Genre::class)
+        $genres = $orm->getRepository(Genre::class)
             ->select()
             ->where('abbreviation', 'in', new Parameter($genreAbbreviations))
             ->fetchAll();
 
-        $tags = $this->orm->getRepository(Tag::class)
+        $tags = $orm->getRepository(Tag::class)
             ->select()
             ->where('value', 'in', new Parameter($tagValues))
             ->fetchAll();
@@ -76,6 +89,6 @@ class BookSqlWriteService
         $bookDbEntity->setGenres($genres);
         $bookDbEntity->setTags($tags);
 
-        $this->em->persist($bookDbEntity)->run();
+        $em->persist($bookDbEntity)->run();
     }
 }
