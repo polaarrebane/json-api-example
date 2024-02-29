@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
+use Cycle\ORM\FactoryInterface;
+use Cycle\ORM\SchemaInterface;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use App\Infrastructure\Database\Util\SchemaCompiler;
 use Cycle\Database\Config;
 use Cycle\Database\DatabaseManager;
-use Cycle\ORM\EntityManager;
 use Cycle\ORM\Factory;
 use Cycle\ORM\Schema;
-use Cycle\ORM\ORM;
 
 $dbConfig = new Config\DatabaseConfig([
     'default' => 'ishual_books',
@@ -29,18 +33,25 @@ $dbConfig = new Config\DatabaseConfig([
 ]);
 
 return [
-    DatabaseManager::class => static fn() => new DatabaseManager($dbConfig),
+    DatabaseManager::class => static function () use ($dbConfig) {
+        $logger = new Logger('test_db_logger');
 
-    ORM::class => static function (ContainerInterface $container) {
+        $fileHandler = new StreamHandler(__DIR__ . '/../logs/test_db.log', Level::Debug);
+        $fileHandler->setFormatter(new LineFormatter());
+        $logger->pushHandler($fileHandler);
+
+        $dbal = new DatabaseManager($dbConfig);
+        // $dbal->setLogger($logger);
+
+        return $dbal;
+    },
+
+    SchemaInterface::class => static function (ContainerInterface $container) {
         $schema = ($container->get(SchemaCompiler::class))();
 
-        return new ORM(
-            new Factory($container->get(DatabaseManager::class)),
-            new Schema($schema)
-        );
+        return new Schema($schema);
     },
 
-    EntityManager::class => static function (ContainerInterface $container) {
-        return new EntityManager($container->get(ORM::class));
-    },
+
+    FactoryInterface::class => static fn(ContainerInterface $container) => new Factory($container->get(DatabaseManager::class)),
 ];

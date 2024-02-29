@@ -4,34 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Book;
 
-use App\Application\Query\RetrieveBook;
-use App\Domain\Dto\BookDto;
+use App\Application\Command\DestroyBook;
 use Codeception\Attribute\DataProvider;
 use Codeception\Attribute\Group;
 use Tests\Support\FunctionalTester;
 
 #[Group('book')]
-class ReadBookCest
+class DeleteBookCest
 {
     use StoreBookTrait;
 
     #[DataProvider('bookProvider')]
-    public function tryToReadBook(FunctionalTester $I, \Codeception\Example $example)
+    public function tryToDeleteBook(FunctionalTester $I, \Codeception\Example $example): void
     {
         $this->store($I, $example);
-
         $bookId = $example['uuid'];
-
-        /** @var BookDto $bookDto */
-        $bookDto = $I->sendQuery(RetrieveBook::fromBookId($bookId));
-
-        $I->assertEquals($bookId, $bookDto->id);
-        $I->assertEquals($example['title'], $bookDto->title);
-        $I->assertEquals($example['description'], $bookDto->description);
-        $I->assertEquals($example['cover'], $bookDto->cover);
-        $I->assertEqualsCanonicalizing(array_column($example['authors_data'], 'uuid'), $bookDto->authors);
-        $I->assertEqualsCanonicalizing($example['genres'], $bookDto->genres);
-        $I->assertEqualsCanonicalizing($example['tags'], $bookDto->tags);
+        $I->sendCommand(DestroyBook::fromBookId($bookId));
+        $I->dontSeeInDatabase('books', ['uuid' => $bookId]);
     }
 
     protected function bookProvider(): array

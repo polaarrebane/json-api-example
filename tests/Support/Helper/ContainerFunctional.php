@@ -36,7 +36,7 @@ class ContainerFunctional extends \Codeception\Module
         return $this->container;
     }
 
-    public function sendCommand(CommandInterface $command): string
+    public function sendCommand(CommandInterface $command): mixed
     {
         /** @var CommandBus $commandBus */
         $commandBus = $this->container->get(CommandBus::class);
