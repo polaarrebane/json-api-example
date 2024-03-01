@@ -23,9 +23,12 @@ class ContainerFunctional extends \Codeception\Module
 
     public function _initialize(): void
     {
+        (\Dotenv\Dotenv::createImmutable(__DIR__ . '/../../..'))->load();
+
         $this->container = (new ContainerBuilder())
             ->useAttributes(true)
             ->addDefinitions(self::PATH_TO_CONFIG . 'autowiring.php')
+            ->addDefinitions(self::PATH_TO_CONFIG . 'app.php')
             ->addDefinitions(self::PATH_TO_CONFIG . 'database_test.php')
             ->addDefinitions(self::PATH_TO_CONFIG . 'ecotone.php')
             ->build();

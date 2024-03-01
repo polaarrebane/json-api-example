@@ -12,29 +12,51 @@ use Cycle\ORM\Factory;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
+use League\Config\Configuration;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 
 // https://cycle-orm.dev/docs/database-connect/current/en
 
-$dbConfig = new Config\DatabaseConfig([
-    'default' => 'ishual_books',
-    'databases' => [
-        'ishual_books' => [
-            'connection' => 'sqlite_file'
-        ]
-    ],
-    'connections' => [
-        'sqlite_file' => new Config\SQLiteDriverConfig(
-            connection: new Config\SQLite\FileConnectionConfig(
-                database: __DIR__ . '/../runtime/database.sqlite'
-            ),
-            queryCache: true,
-        ),
-    ]
-]);
-
 return [
-    DatabaseManager::class => static fn() => new DatabaseManager($dbConfig),
+    DatabaseManager::class => static function (ContainerInterface $container) {
+        $config = $container->get(Configuration::class);
+        $dbConfig = new Config\DatabaseConfig([
+            'default' => 'ishual_books',
+            'databases' => [
+                'ishual_books' => [
+                    'connection' => 'postgres'
+                ]
+            ],
+            'connections' => [
+                'postgres' => new Config\PostgresDriverConfig(
+                    connection: new Config\Postgres\TcpConnectionConfig(
+                        database: $config->get('db.database'),
+                        host: $config->get('db.host'),
+                        port: $config->get('db.port'),
+                        user: $config->get('db.user'),
+                        password: $config->get('db.password'),
+                    ),
+                    schema: 'public',
+                    queryCache: false,
+                ),
+            ]
+        ]);
+
+        $logger = new Logger('db_logger');
+
+        $fileHandler = new StreamHandler(__DIR__ . '/../logs/db.log', Level::Debug);
+        $fileHandler->setFormatter(new LineFormatter());
+        $logger->pushHandler($fileHandler);
+
+        $dbal = new DatabaseManager($dbConfig);
+        // $dbal->setLogger($logger);
+
+        return $dbal;
+    },
 
     SchemaInterface::class => static function (ContainerInterface $container) {
         $pathToDump = __DIR__ . '/../database/schema.json';

@@ -20,7 +20,7 @@ class Book
     #[Column(type: 'string')]
     private string $title;
 
-    #[Column(type: 'string')]
+    #[Column(type: 'text')]
     private string $description;
 
     #[Column(type: 'string')]

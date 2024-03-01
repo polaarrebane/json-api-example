@@ -25,7 +25,6 @@ class AuthorServiceImplementation implements AuthorDomainServiceInterface, Autho
     {
         $orm = $this->container->make(ORM::class);
         $author = $orm->getRepository(Author::class)->findByPK($command->authorId->get());
-
         if ($author) {
             $em = new EntityManager($orm);
             $em->delete($author);

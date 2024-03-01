@@ -71,18 +71,22 @@ class BookSqlWriteService
             ->where('abbreviation', 'in', new Parameter($genreAbbreviations))
             ->fetchAll();
 
-        $tags = $orm->getRepository(Tag::class)
-            ->select()
-            ->where('value', 'in', new Parameter($tagValues))
-            ->fetchAll();
+        if ($bookDomainEntity->getTags() !== []) {
+            $tags = $orm->getRepository(Tag::class)
+                ->select()
+                ->where(['value' => ['in' => new Parameter($tagValues)]])
+                ->fetchAll();
 
-        $tagsNotInDatabase = array_diff(
-            $tagValues,
-            array_map(static fn(Tag $tag) => $tag->getValue(), $tags)
-        );
+            $tagsNotInDatabase = array_diff(
+                $tagValues,
+                array_map(static fn(Tag $tag) => $tag->getValue(), $tags)
+            );
 
-        foreach ($tagsNotInDatabase as $tagNotInDatabase) {
-            $tags[] = new Tag($tagNotInDatabase);
+            foreach ($tagsNotInDatabase as $tagNotInDatabase) {
+                $tags[] = new Tag($tagNotInDatabase);
+            }
+        } else {
+            $tags = [];
         }
 
         $bookDbEntity->setAuthors($authors);

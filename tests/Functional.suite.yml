@@ -3,12 +3,15 @@ modules:
     enabled:
         - Asserts
         - Db:
-            dsn: 'sqlite:runtime/database.tests.sqlite'
-            user: ''
-            password: ''
-            populate: true # load dump before all tests
-            cleanup: true # load dump for each test
-            dump: 'tests/_data/dump.sql'
+            dsn: 'pgsql:host=localhost;dbname=ishual_books_test'
+            user: 'ishual_books'
+            password: 'password'
+            dump: 'tests/_data/ishual_books.dump'
+            populate: true # run populator before all tests
+            cleanup: true # run populator before each test
+            skip_cleanup_if_failed: true
+            populator: 'PGPASSWORD="password" pg_restore -U $user -h $host -d $dbname $dump'
 
         - Tests\Support\Helper\ContainerFunctional
+        - Tests\Support\Helper\PgHelper
 step_decorators: ~

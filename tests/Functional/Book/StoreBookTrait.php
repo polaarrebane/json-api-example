@@ -37,5 +37,10 @@ trait StoreBookTrait
             $I->haveInDatabase('tags', ['id' => $id + 1, 'value' => $tag]);
             $I->haveInDatabase('book_tags', ['book_uuid' => $bookId, 'tag_id' => $id + 1]);
         }
+
+        $I->fixSequence('tags', 'id');
+        $I->fixSequence('book_authors', 'id');
+        $I->fixSequence('book_genres', 'id');
+        $I->fixSequence('book_tags', 'id');
     }
 }
