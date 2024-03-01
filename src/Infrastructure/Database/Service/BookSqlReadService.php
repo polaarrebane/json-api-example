@@ -21,20 +21,27 @@ use Cycle\ORM\ORM;
 class BookSqlReadService
 {
     public function __construct(
-        protected ORM $orm,
+        protected \DI\Container $container,
     ) {
     }
 
     public function findBy(BookId $bookId): BookDomainEntity
     {
-        /** @var BookDbEntity $bookDbEntity */
-        $bookDbEntity = $this->orm
+        $orm = $this->container->make(ORM::class);
+
+        /** @var null|BookDbEntity $bookDbEntity */
+        $bookDbEntity = $orm
             ->getRepository(BookDbEntity::class)
-//            ->select()
-//            ->with('authors')
-//            ->with('genres')
-//            ->with('tags')
-            ->findByPK($bookId->toUuid());
+            ->select()
+            ->load('authors')
+            ->load('genres')
+            ->load('tags')
+            ->where('uuid', $bookId->toUuid())
+            ->fetchOne();
+
+        if (is_null($bookDbEntity)) {
+            throw new \InvalidArgumentException();
+        }
 
         $authorIds = array_map(
             static fn(Author $authorDbEntity) => AuthorId::fromUuid($authorDbEntity->getUuid()),
@@ -56,7 +63,7 @@ class BookSqlReadService
             title: BookTitle::fromString($bookDbEntity->getTitle()),
             description: BookDescription::fromString($bookDbEntity->getDescription()),
             cover: BookCover::fromString($bookDbEntity->getCover()),
-            authors:  $authorIds,
+            authors: $authorIds,
             genres: $genreAbbreviations,
             tags: $tags,
         );

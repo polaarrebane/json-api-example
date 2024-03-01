@@ -20,7 +20,7 @@ class Book
     #[Column(type: 'string')]
     private string $title;
 
-    #[Column(type: 'string')]
+    #[Column(type: 'text')]
     private string $description;
 
     #[Column(type: 'string')]
@@ -29,19 +29,19 @@ class Book
     /**
      * @var Tag[]
      */
-    #[ManyToMany(target: Tag::class, through: BookTag::class)]
+    #[ManyToMany(target: Tag::class, through: BookTag::class, cascade: true, fkAction: 'CASCADE', load: 'eager')]
     protected array $tags;
 
     /**
      * @var Genre[]
      */
-    #[ManyToMany(target: Genre::class, through: BookGenre::class)]
+    #[ManyToMany(target: Genre::class, through: BookGenre::class, cascade: true, fkAction: 'CASCADE', load: 'eager')]
     protected array $genres;
 
     /**
      * @var Author[]
      */
-    #[ManyToMany(target: Author::class, through: BookAuthor::class)]
+    #[ManyToMany(target: Author::class, through: BookAuthor::class, cascade: true, fkAction: 'CASCADE', load: 'eager')]
     protected array $authors;
 
     /**

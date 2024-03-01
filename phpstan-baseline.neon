@@ -26,11 +26,6 @@ parameters:
 			path: src/Infrastructure/Database/Entity/Tag.php
 
 		-
-			message: "#^Call to an undefined method Cycle\\\\ORM\\\\RepositoryInterface\\<TEntity of object\\>\\:\\:select\\(\\)\\.$#"
-			count: 3
-			path: src/Infrastructure/Database/Service/BookSqlWriteService.php
-
-		-
 			message: "#^Constructor of class App\\\\Infrastructure\\\\Http\\\\Validator\\\\RequestValidator has an unused parameter \\$authorService\\.$#"
 			count: 1
 			path: src/Infrastructure/Http/Validator/RequestValidator.php
@@ -39,3 +34,8 @@ parameters:
 			message: "#^Match expression does not handle remaining value\\: class\\-string\\<App\\\\Infrastructure\\\\Http\\\\Request\\\\RequestInterface\\>&literal\\-string$#"
 			count: 1
 			path: src/Infrastructure/Http/Validator/RequestValidator.php
+
+		-
+			message: "#^Call to an undefined method Cycle\\\\Database\\\\TableInterface\\:\\:select\\(\\)\\.$#"
+			count: 1
+			path: src/Infrastructure/ServiceImplementation/AuthorServiceImplementation.php

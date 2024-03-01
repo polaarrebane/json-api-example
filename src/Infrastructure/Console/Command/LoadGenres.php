@@ -21,17 +21,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 class LoadGenres extends Command
 {
     #[Inject]
-    protected EntityManager $em;
-
-    #[Inject]
-    protected ORM $orm;
+    protected \DI\Container $container;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $orm = $this->container->make(ORM::class);
+        $em = new EntityManager($orm);
+
         $genres = [];
 
         /** @var Genre $genreEntity */
-        foreach ($this->orm->getRepository(Genre::class)->findAll() as $genreEntity) {
+        foreach ($orm->getRepository(Genre::class)->findAll() as $genreEntity) {
             $genres[$genreEntity->getAbbreviation()] = $genreEntity;
         }
 
@@ -44,7 +44,7 @@ class LoadGenres extends Command
 
                 if ($description !== $genreEntity->getDescription()) {
                     $genreEntity->setDescription($description);
-                    $this->em->persist($genreEntity)->run();
+                    $em->persist($genreEntity)->run();
 
                     $output->writeln("<comment>Updated</comment> description for the <info>$abbreviation</info> genre.");
                 } else {
@@ -52,7 +52,7 @@ class LoadGenres extends Command
                 }
             } else {
                 $genreEntity = new Genre($abbreviation, $description);
-                $this->em->persist($genreEntity)->run();
+                $em->persist($genreEntity)->run();
 
                 $output->writeln("The <info>$abbreviation</info> genre has been <comment>added</comment>.");
             }

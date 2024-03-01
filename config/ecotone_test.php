@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Ecotone\Lite\EcotoneLite;
 use Ecotone\Messaging\Config\ServiceConfiguration;
 use HaydenPierce\ClassFinder\ClassFinder;
@@ -10,7 +12,7 @@ return [
         classesToResolve: ClassFinder::getClassesInNamespace('App\Domain\Entity'),
         containerOrAvailableServices: $container,
         configuration: ServiceConfiguration::createWithDefaults()
-            ->withNamespaces(["App"])
+            ->withNamespaces(["App\Domain\Entity"])
             ->withFailFast(false)
     ),
 ];

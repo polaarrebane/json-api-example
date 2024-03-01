@@ -13,7 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 #[Uuid4]
 class Author
 {
-    #[Column(type: 'uuid', primary: true, field: 'id')]
+    #[Column(type: 'uuid', primary: true, field: 'uuid')]
     private UuidInterface $uuid;
 
     #[Column(type: 'string')]

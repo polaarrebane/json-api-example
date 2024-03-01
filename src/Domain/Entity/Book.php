@@ -88,27 +88,27 @@ class Book
     #[CommandHandler]
     public function modify(ModifyAttributesOfBook $command): self
     {
-        if ($command->title) {
+        if (!is_null($command->title)) {
             $this->updateTitle($command->title);
         }
 
-        if ($command->description) {
+        if (!is_null($command->description)) {
             $this->updateDescription($command->description);
         }
 
-        if ($command->cover) {
+        if (!is_null($command->cover)) {
             $this->updateCover($command->cover);
         }
 
-        if ($command->authors) {
+        if (!is_null($command->authors)) {
             $this->updateAuthors($command->authors);
         }
 
-        if ($command->genres) {
+        if (!is_null($command->genres)) {
             $this->updateGenres($command->genres);
         }
 
-        if ($command->tags) {
+        if (!is_null($command->tags)) {
             $this->updateTags($command->tags);
         }
 
