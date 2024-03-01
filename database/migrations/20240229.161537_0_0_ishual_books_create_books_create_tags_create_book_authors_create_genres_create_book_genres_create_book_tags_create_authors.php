@@ -6,7 +6,7 @@ namespace Migration;
 
 use Cycle\Migrations\Migration;
 
-class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
+class OrmIshualBooksFed1ea1d902a32562310fb3e1cb2750b extends Migration
 {
     protected const DATABASE = 'ishual_books';
 
@@ -22,7 +22,7 @@ class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
         $this->table('tags')
         ->addColumn('id', 'primary', ['nullable' => false, 'defaultValue' => null])
         ->addColumn('value', 'string', ['nullable' => false, 'defaultValue' => null, 'size' => 255])
-        ->addIndex(['value'], ['name' => 'tags_index_value_65df23d875b0b', 'unique' => true])
+        ->addIndex(['value'], ['name' => 'tags_index_value_65e0ada96d909', 'unique' => true])
         ->setPrimaryKeys(['id'])
         ->create();
         $this->table('authors')
@@ -35,11 +35,11 @@ class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
         ->addColumn('book_uuid', 'uuid', ['nullable' => false, 'defaultValue' => null, 'field' => 'uuid', 'size' => 36])
         ->addColumn('author_uuid', 'uuid', ['nullable' => false, 'defaultValue' => null, 'field' => 'id', 'size' => 36])
         ->addIndex(['book_uuid', 'author_uuid'], [
-            'name' => 'book_authors_index_book_uuid_author_uuid_65df23d875a3a',
+            'name' => 'book_authors_index_book_uuid_author_uuid_65e0ada96d841',
             'unique' => true,
         ])
-        ->addIndex(['book_uuid'], ['name' => 'book_authors_index_book_uuid_65df23d875a4e', 'unique' => false])
-        ->addIndex(['author_uuid'], ['name' => 'book_authors_index_author_uuid_65df23d875a65', 'unique' => false])
+        ->addIndex(['book_uuid'], ['name' => 'book_authors_index_book_uuid_65e0ada96d855', 'unique' => false])
+        ->addIndex(['author_uuid'], ['name' => 'book_authors_index_author_uuid_65e0ada96d86b', 'unique' => false])
         ->addForeignKey(['book_uuid'], 'books', ['uuid'], [
             'name' => 'book_authors_book_uuid_fk',
             'delete' => 'CASCADE',
@@ -58,7 +58,7 @@ class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
         ->addColumn('id', 'primary', ['nullable' => false, 'defaultValue' => null])
         ->addColumn('abbreviation', 'string', ['nullable' => false, 'defaultValue' => null, 'size' => 255])
         ->addColumn('description', 'string', ['nullable' => false, 'defaultValue' => null, 'size' => 255])
-        ->addIndex(['abbreviation'], ['name' => 'genres_index_abbreviation_65df23d875b37', 'unique' => true])
+        ->addIndex(['abbreviation'], ['name' => 'genres_index_abbreviation_65e0ada96d935', 'unique' => true])
         ->setPrimaryKeys(['id'])
         ->create();
         $this->table('book_genres')
@@ -66,11 +66,11 @@ class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
         ->addColumn('book_uuid', 'uuid', ['nullable' => false, 'defaultValue' => null, 'field' => 'uuid', 'size' => 36])
         ->addColumn('genre_id', 'integer', ['nullable' => false, 'defaultValue' => null])
         ->addIndex(['book_uuid', 'genre_id'], [
-            'name' => 'book_genres_index_book_uuid_genre_id_65df23d87599f',
+            'name' => 'book_genres_index_book_uuid_genre_id_65e0ada96d7a9',
             'unique' => true,
         ])
-        ->addIndex(['book_uuid'], ['name' => 'book_genres_index_book_uuid_65df23d8759b5', 'unique' => false])
-        ->addIndex(['genre_id'], ['name' => 'book_genres_index_genre_id_65df23d8759cc', 'unique' => false])
+        ->addIndex(['book_uuid'], ['name' => 'book_genres_index_book_uuid_65e0ada96d7be', 'unique' => false])
+        ->addIndex(['genre_id'], ['name' => 'book_genres_index_genre_id_65e0ada96d7d5', 'unique' => false])
         ->addForeignKey(['book_uuid'], 'books', ['uuid'], [
             'name' => 'book_genres_book_uuid_fk',
             'delete' => 'CASCADE',
@@ -89,9 +89,9 @@ class OrmIshualBooksE4923a848a500840717a98c277033a9d extends Migration
         ->addColumn('id', 'primary', ['nullable' => false, 'defaultValue' => null])
         ->addColumn('book_uuid', 'uuid', ['nullable' => false, 'defaultValue' => null, 'field' => 'uuid', 'size' => 36])
         ->addColumn('tag_id', 'integer', ['nullable' => false, 'defaultValue' => null])
-        ->addIndex(['book_uuid', 'tag_id'], ['name' => 'book_tags_index_book_uuid_tag_id_65df23d875828', 'unique' => true])
-        ->addIndex(['book_uuid'], ['name' => 'book_tags_index_book_uuid_65df23d875912', 'unique' => false])
-        ->addIndex(['tag_id'], ['name' => 'book_tags_index_tag_id_65df23d87592e', 'unique' => false])
+        ->addIndex(['book_uuid', 'tag_id'], ['name' => 'book_tags_index_book_uuid_tag_id_65e0ada96d636', 'unique' => true])
+        ->addIndex(['book_uuid'], ['name' => 'book_tags_index_book_uuid_65e0ada96d71d', 'unique' => false])
+        ->addIndex(['tag_id'], ['name' => 'book_tags_index_tag_id_65e0ada96d739', 'unique' => false])
         ->addForeignKey(['book_uuid'], 'books', ['uuid'], [
             'name' => 'book_tags_book_uuid_fk',
             'delete' => 'CASCADE',
