@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use Override;
+
 readonly class GenreAbbreviation extends AbstractValueObject
 {
     protected function __construct(protected GenreEnum $genreEnum)
@@ -21,12 +23,12 @@ readonly class GenreAbbreviation extends AbstractValueObject
         return new self($value);
     }
 
-    #[\Override] public function get(): string
+    #[Override] public function get(): string
     {
         return $this->genreEnum->value;
     }
 
-    #[\Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
+    #[Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
     {
         return ($valueObject::class === self::class) && ($this->genreEnum === $valueObject->genreEnum);
     }

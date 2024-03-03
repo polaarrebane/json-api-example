@@ -21,7 +21,8 @@ class Relationship
     {
         return [
             'links' => [
-                'self' => $this->linkToSelf . '/' . $this->type,
+                'self' => $this->linkToSelf . '/relationships/' . $this->type,
+                'related' => $this->linkToSelf . '/' . $this->type,
             ],
             'data' => array_map(
                 fn(string $id) => [

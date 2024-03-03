@@ -8,11 +8,12 @@ use App\Domain\Entity\Author as AuthorDomainEntity;
 use App\Infrastructure\Database\Entity\Author as AuthorDbEntity;
 use Cycle\ORM\EntityManager;
 use Cycle\ORM\ORM;
+use DI\Container;
 
 class AuthorSqlWriteService
 {
     public function __construct(
-        protected \DI\Container $container,
+        protected Container $container,
     ) {
     }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use Override;
+
 readonly class BookTitle extends AbstractValueObject
 {
     protected function __construct(protected string $title)
@@ -16,7 +18,7 @@ readonly class BookTitle extends AbstractValueObject
         return new self($value);
     }
 
-    #[\Override] public function get(): string
+    #[Override] public function get(): string
     {
         return $this->title;
     }

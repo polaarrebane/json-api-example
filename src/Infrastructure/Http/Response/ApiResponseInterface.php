@@ -8,5 +8,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ApiResponseInterface
 {
-    public function toResponse(): ResponseInterface;
+    public function toPsrResponse(): ResponseInterface;
 }

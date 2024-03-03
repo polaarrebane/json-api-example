@@ -3,7 +3,7 @@
 namespace Tests\Unit\Domain\Entity;
 
 use App\Application\Command\AddNewAuthor;
-use App\Application\Command\ModifyAttributesOfAuthor;
+use App\Application\Command\ModifyAuthor;
 use App\Domain\Dto\AuthorDto;
 use App\Domain\Entity\Author;
 use App\Domain\Event\Author\AuthorWasCreated;
@@ -70,7 +70,7 @@ class AuthorTest extends Unit
         $event = $this->tester->ecotone()->getRecordedEvents()[0];
         $authorId = $event->getAuthorId();
 
-        $this->tester->ecotone()->sendCommand(new ModifyAttributesOfAuthor(
+        $this->tester->ecotone()->sendCommand(new ModifyAuthor(
             authorId: $authorId,
             name: $newAuthorName,
         ));

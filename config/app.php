@@ -9,7 +9,9 @@ return [
     Configuration::class => static function () {
         $configStructure = [
             'app' => Expect::structure([
-                'url' => Expect::string(),
+                'host' => Expect::string(),
+                'scheme' => Expect::string(),
+                'api_base_path' => Expect::string(),
                 'image_hosting_service' => Expect::string(),
             ]),
             'db' => Expect::structure([
@@ -30,7 +32,9 @@ return [
 
         $config = new Configuration($configStructure);
 
-        $config->set('app.url', $_ENV['APP_URL']);
+        $config->set('app.host', $_ENV['APP_HOST']);
+        $config->set('app.scheme', $_ENV['APP_SCHEME']);
+        $config->set('app.api_base_path', $_ENV['APP_API_BASE_PATH']);
         $config->set('app.image_hosting_service', $_ENV['APP_IMAGE_HOSTING_SERVICE']);
 
         $config->set('db.host', $_ENV['POSTGRES_DB_HOST']);

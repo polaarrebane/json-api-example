@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Http\Factory;
+namespace App\Infrastructure\Http\Request;
 
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
 use CuyZ\Valinor\Mapper\MappingError;
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\Mapper\Tree\Message\MessageBuilder;
@@ -16,28 +14,21 @@ use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Webmozart\Assert\InvalidArgumentException;
 
-class RequestFactory
+class Mapper
 {
     protected ?TreeMapper $treeMapper = null;
 
-    public function __construct(
-        protected RequestValidator $requestValidator,
-    ) {
-    }
-
     /**
-     * @template T of RequestInterface
+     * @template T of object
      * @param class-string<T> $className
      * @param ServerRequestInterface $serverRequest
      * @return T
      * @throws MappingError
      * @throws JsonException
      */
-    public function make(string $className, ServerRequestInterface $serverRequest): RequestInterface
+    public function map(string $className, ServerRequestInterface $serverRequest): object
     {
-        $newRequest = $this->mapper()->map($className, $this->source($serverRequest));
-        $this->requestValidator->validate($newRequest);
-        return  $newRequest;
+        return $this->mapper()->map($className, $this->source($serverRequest));
     }
 
     protected function source(ServerRequestInterface $request): Source
@@ -50,13 +41,16 @@ class RequestFactory
     {
         if (is_null($this->treeMapper)) {
             $builder = new MapperBuilder();
-            $builder->filterExceptions(function (Throwable $exception) {
-                if ($exception instanceof InvalidArgumentException) {
-                    return MessageBuilder::from($exception);
-                }
-                throw $exception;
-            });
-            $this->treeMapper = $builder->mapper();
+            $this->treeMapper = $builder
+                ->filterExceptions(function (Throwable $exception) {
+                    if ($exception instanceof InvalidArgumentException) {
+                        return MessageBuilder::from($exception);
+                    }
+                    throw $exception;
+                })
+                ->allowSuperfluousKeys()
+                ->enableFlexibleCasting()
+                ->mapper();
         }
 
         return $this->treeMapper;

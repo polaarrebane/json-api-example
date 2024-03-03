@@ -18,7 +18,7 @@ class DeleteAuthorCest
         $martin = $this->authorProvider()['Martin'];
         $I->haveInDatabase('authors', ['uuid' => $martin['uuid'], 'name' => $martin['name']]);
 
-        $command = DestroyAuthor::fromAuthorId($martin['uuid']);
+        $command = DestroyAuthor::fromString($martin['uuid']);
         $I->sendCommand($command);
 
         $I->dontSeeInDatabase('authors', ['uuid' => $martin['uuid']]);

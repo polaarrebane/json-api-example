@@ -15,11 +15,12 @@ use Cycle\Database\Injection\Parameter;
 use Cycle\ORM\EntityManager;
 use App\Infrastructure\Database\Entity\Book as BookDbEntity;
 use Cycle\ORM\ORM;
+use DI\Container;
 
 class BookSqlWriteService
 {
     public function __construct(
-        protected \DI\Container $container,
+        protected Container $container,
     ) {
     }
 
@@ -31,7 +32,12 @@ class BookSqlWriteService
         /** @var ?BookDbEntity $bookDbEntity */
         $bookDbEntity = $orm
             ->getRepository(BookDbEntity::class)
-            ->findByPK($bookDomainEntity->getBookId()->toUuid());
+            ->select()
+            ->load('authors')
+            ->load('genres')
+            ->load('tags')
+            ->where('uuid', $bookDomainEntity->getBookId()->toUuid())
+            ->fetchOne();
 
         if (is_null($bookDbEntity)) {
             $bookDbEntity = new BookDbEntity(

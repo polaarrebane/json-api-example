@@ -6,7 +6,7 @@ namespace App\Application\Command;
 
 use App\Domain\ValueObject\AuthorId;
 
-readonly class ModifyAttributesOfAuthor implements CommandInterface
+readonly class ModifyAuthor implements CommandInterface
 {
     public function __construct(
         public AuthorId $authorId,

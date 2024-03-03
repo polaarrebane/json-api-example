@@ -9,11 +9,13 @@ use App\Domain\ValueObject\AuthorId;
 use App\Domain\ValueObject\AuthorName;
 use App\Infrastructure\Database\Entity\Author as AuthorDbEntity;
 use Cycle\ORM\ORM;
+use DI\Container;
+use InvalidArgumentException;
 
 class AuthorSqlReadService
 {
     public function __construct(
-        protected \DI\Container $container,
+        protected Container $container,
     ) {
     }
 
@@ -27,7 +29,7 @@ class AuthorSqlReadService
             ->findByPK($authorId->toUuid());
 
         if (is_null($authorDbEntity)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         return new AuthorDomainEntity(
