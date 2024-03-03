@@ -23,7 +23,7 @@ class ReadBookCest
         $bookId = $example['uuid'];
 
         /** @var BookDto $bookDto */
-        $bookDto = $I->sendQuery(RetrieveBook::fromBookId($bookId));
+        $bookDto = $I->sendQuery(RetrieveBook::fromString($bookId));
 
         $I->assertEquals($bookId, $bookDto->id);
         $I->assertEquals($example['title'], $bookDto->title);

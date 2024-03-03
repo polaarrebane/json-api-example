@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Entity;
 
 use App\Application\Command\AddNewBook;
-use App\Application\Command\ModifyAttributesOfBook;
+use App\Application\Command\ModifyBook;
 use App\Application\Query\RetrieveBook;
 use App\Domain\Dto\BookDto;
 use App\Domain\Event\Book\AuthorsOfBookWasModified;
@@ -86,7 +86,7 @@ class Book
     }
 
     #[CommandHandler]
-    public function modify(ModifyAttributesOfBook $command): self
+    public function modify(ModifyBook $command): self
     {
         if (!is_null($command->title)) {
             $this->updateTitle($command->title);

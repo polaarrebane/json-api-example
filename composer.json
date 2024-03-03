@@ -29,7 +29,8 @@
     "cycle/schema-migrations-generator": "^2.2",
     "cycle/schema-builder": "^2.8",
     "cycle/entity-behavior-uuid": "^1.2",
-    "cycle/database": "^2.8"
+    "cycle/database": "^2.8",
+    "spatie/url": "^2.3"
   },
   "autoload": {
     "psr-4": {
@@ -43,7 +44,8 @@
   },
   "scripts": {
     "test": "php vendor/bin/codecept run --steps",
-    "start": "php -S localhost:8000 -t public"
+    "start": "php -S localhost:8000 -t public",
+    "start-debug": "php -S localhost:8000 -t public  -dxdebug.mode=debug"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

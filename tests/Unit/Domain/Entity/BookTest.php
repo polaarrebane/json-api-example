@@ -5,7 +5,7 @@ namespace Tests\Unit\Domain\Entity;
 use App\Application\Command\AddNewAuthor;
 use App\Application\Command\AddNewBook;
 use App\Application\Command\AddNewGenre;
-use App\Application\Command\ModifyAttributesOfBook;
+use App\Application\Command\ModifyBook;
 use App\Domain\Dto\BookDto;
 use App\Domain\Entity\Book;
 use App\Domain\Event\Book\BookWasCreated;
@@ -152,56 +152,56 @@ class BookTest extends Unit
         return [
 
             'modify title' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     title: 'Qui dolores ut alias et asperiores tempora est eligendi.',
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => [
+                'calculateExpectedValue' => fn(ModifyBook $command) => [
                     BookTitle::fromString($command->title),
                 ],
                 'calculateActualValue' => fn(Book $book) => [$book->getTitle()],
             ],
 
             'modify description' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     description: 'Perspiciatis sint nihil architecto sequi fugiat ab similique consequatur.',
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => [
+                'calculateExpectedValue' => fn(ModifyBook $command) => [
                     BookDescription::fromString($command->description),
                 ],
                 'calculateActualValue' => fn(Book $book) => [$book->getDescription()],
             ],
 
             'modify cover' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     cover: 'Facere quo dignissimos qui nemo nulla dolor cumque',
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => [BookCover::fromString($command->cover)],
+                'calculateExpectedValue' => fn(ModifyBook $command) => [BookCover::fromString($command->cover)],
                 'calculateActualValue' => fn(Book $book) => [$book->getCover()],
             ],
 
             'modify authors' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     authors: [
                         AuthorId::fromUuid(),
                     ],
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => $command->authors,
+                'calculateExpectedValue' => fn(ModifyBook $command) => $command->authors,
                 'calculateActualValue' => fn(Book $book) => $book->getAuthors(),
             ],
 
             'modify genres' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     genres: [
                         GenreAbbreviation::fromEnum(GenreEnum::adv_geo)->get(),
                         GenreAbbreviation::fromEnum(GenreEnum::antique)->get(),
                     ],
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => [
+                'calculateExpectedValue' => fn(ModifyBook $command) => [
                     GenreAbbreviation::fromEnum(GenreEnum::adv_geo),
                     GenreAbbreviation::fromEnum(GenreEnum::antique)
                 ],
@@ -209,11 +209,11 @@ class BookTest extends Unit
             ],
 
             'modify tags' => [
-                'calculateCommand' => fn(BookId $bookId) => new ModifyAttributesOfBook(
+                'calculateCommand' => fn(BookId $bookId) => new ModifyBook(
                     bookId: $bookId,
                     tags: ['some', 'tag'],
                 ),
-                'calculateExpectedValue' => fn(ModifyAttributesOfBook $command) => [
+                'calculateExpectedValue' => fn(ModifyBook $command) => [
                     TagValue::fromString('some'),
                     TagValue::fromString('tag')
                 ],

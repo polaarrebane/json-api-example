@@ -5,44 +5,29 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http\Validator;
 
 use App\Domain\ValueObject\GenreEnum;
-use App\Infrastructure\Http\Request\Component\RelationshipItem;
-use App\Infrastructure\Http\Request\CreateBookRequest;
-use App\Infrastructure\Http\Request\RequestInterface;
+use App\Infrastructure\Http\Request\RelationshipItem;
 use App\Infrastructure\Http\Service\AuthorServiceInterface;
+use App\Infrastructure\Http\Service\BookServiceInterface;
 use League\Config\Configuration;
+use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 class RequestValidator
 {
     public function __construct(
-        AuthorServiceInterface $authorService,
+        protected AuthorServiceInterface $authorService,
+        protected BookServiceInterface $bookService,
         protected Configuration $config,
     ) {
     }
 
-    public function validate(RequestInterface $request): void
+    public function validateBookId(string $bookId): void
     {
-        match ($request::class) {
-            CreateBookRequest::class => $this->validateCreateBookRequest($request)
-        };
+        Assert::true(Uuid::isValid($bookId), 'An ID of a book should be a valid uuid');
+        Assert::true($this->bookService->exists($bookId), 'Book not found');
     }
 
-    protected function validateCreateBookRequest(CreateBookRequest $request): void
-    {
-        $this->validateBookRequest($request);
-    }
-
-    protected function validateBookRequest(CreateBookRequest $request): void
-    {
-        Assert::eq($request->type, Type::BOOKS->value, 'Type should be "' . Type::BOOKS->value . '"');
-
-        $this->validateCover($request->attributes->cover);
-        $this->validateTags($request->attributes->tags);
-        $this->validateAuthors($request->relationships->authors->data);
-        $this->validateGenres($request->relationships->genres->data);
-    }
-
-    protected function validateCover(string $cover): void
+    public function validateCover(string $cover): void
     {
         Assert::notFalse(
             filter_var($cover, FILTER_VALIDATE_URL),
@@ -71,7 +56,7 @@ class RequestValidator
      * @param RelationshipItem[] $authorIds
      * @return void
      */
-    protected function validateAuthors(array $authorIds): void
+    public function validateAuthors(array $authorIds): void
     {
         foreach ($authorIds as $author) {
             Assert::eq(
@@ -81,13 +66,21 @@ class RequestValidator
             );
             Assert::uuid($author->id, 'An ID of an author should be a valid uuid');
         }
+
+        Assert::true($this->authorService->exists(array_column($authorIds, 'id')), 'Author not found');
+    }
+
+    public function validaAuthorId(string $authorId): void
+    {
+        Assert::true(Uuid::isValid($authorId), 'An ID of an author should be a valid uuid');
+        Assert::true($this->authorService->exists([$authorId]), 'Author not found');
     }
 
     /**
      * @param RelationshipItem[] $genres
      * @return void
      */
-    protected function validateGenres(array $genres): void
+    public function validateGenres(array $genres): void
     {
         $knownGenres = GenreEnum::values();
 
@@ -101,7 +94,7 @@ class RequestValidator
      * @param string[] $tags
      * @return void
      */
-    protected function validateTags(array $tags): void
+    public function validateTags(array $tags): void
     {
         foreach ($tags as $tag) {
             Assert::alnum($tag, 'Tag should be alphabetical-numeral');

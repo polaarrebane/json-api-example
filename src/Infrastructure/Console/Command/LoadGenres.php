@@ -9,6 +9,7 @@ use App\Infrastructure\Database\Entity\Genre;
 use Cycle\ORM\EntityManager;
 use Cycle\ORM\ORM;
 use DI\Attribute\Inject;
+use DI\Container;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class LoadGenres extends Command
 {
     #[Inject]
-    protected \DI\Container $container;
+    protected Container $container;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

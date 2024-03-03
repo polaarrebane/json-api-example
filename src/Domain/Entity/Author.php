@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Entity;
 
 use App\Application\Command\AddNewAuthor;
-use App\Application\Command\ModifyAttributesOfAuthor;
+use App\Application\Command\ModifyAuthor;
 use App\Application\Query\RetrieveAuthor;
 use App\Domain\Dto\AuthorDto;
 use App\Domain\Event\Author\AuthorWasCreated;
@@ -46,7 +46,7 @@ class Author
     }
 
     #[CommandHandler]
-    public function modify(ModifyAttributesOfAuthor $command): self
+    public function modify(ModifyAuthor $command): self
     {
         if ($command->name) {
             $this->updateName($command->name);

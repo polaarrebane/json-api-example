@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Author;
 
-use App\Application\Command\ModifyAttributesOfAuthor;
+use App\Application\Command\ModifyAuthor;
 use App\Domain\ValueObject\AuthorId;
 use Codeception\Attribute\DataProvider;
 use Codeception\Attribute\Group;
@@ -21,7 +21,7 @@ class UpdateAuthorCest
             'name' => $example['old_name'],
         ]);
 
-        $command = new ModifyAttributesOfAuthor(
+        $command = new ModifyAuthor(
             AuthorId::fromString($example['uuid']),
             name: $example['new_name'],
         );

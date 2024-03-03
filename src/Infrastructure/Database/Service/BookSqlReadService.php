@@ -17,11 +17,13 @@ use App\Infrastructure\Database\Entity\Book as BookDbEntity;
 use App\Infrastructure\Database\Entity\Genre;
 use App\Infrastructure\Database\Entity\Tag;
 use Cycle\ORM\ORM;
+use DI\Container;
+use InvalidArgumentException;
 
 class BookSqlReadService
 {
     public function __construct(
-        protected \DI\Container $container,
+        protected Container $container,
     ) {
     }
 
@@ -40,7 +42,7 @@ class BookSqlReadService
             ->fetchOne();
 
         if (is_null($bookDbEntity)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $authorIds = array_map(

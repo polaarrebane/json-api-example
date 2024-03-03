@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use Override;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -29,12 +30,12 @@ readonly class AuthorId extends AbstractValueObject
         return $this->uuid;
     }
 
-    #[\Override] public function get(): string
+    #[Override] public function get(): string
     {
         return $this->uuid->toString();
     }
 
-    #[\Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
+    #[Override] public function isEqualTo(self|ValueObjectInterface $valueObject): bool
     {
         return ($valueObject::class === self::class) && ($this->uuid->equals($valueObject->uuid));
     }

@@ -13,7 +13,7 @@ readonly class DestroyAuthor implements CommandInterface
     ) {
     }
 
-    public static function fromAuthorId(string $id): self
+    public static function fromString(string $id): self
     {
         return new self(AuthorId::fromString($id));
     }

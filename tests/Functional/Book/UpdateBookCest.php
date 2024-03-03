@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Book;
 
-use App\Application\Command\ModifyAttributesOfBook;
+use App\Application\Command\ModifyBook;
 use App\Domain\ValueObject\BookId;
 use Codeception\Attribute\DataProvider;
 use Codeception\Attribute\Group;
@@ -28,7 +28,7 @@ class UpdateBookCest
         foreach ($this->bookProvider() as $book) {
             $bookId = $book['uuid'];
             $fields = array_intersect_key($book['new'], array_flip($example['fields']));
-            $command = new ModifyAttributesOfBook(BookId::fromString($bookId), ...$fields);
+            $command = new ModifyBook(BookId::fromString($bookId), ...$fields);
 
             $I->sendCommand($command);
 
@@ -45,7 +45,7 @@ class UpdateBookCest
     {
         foreach ($this->bookProvider() as $book) {
             $bookId = $book['uuid'];
-            $command = new ModifyAttributesOfBook(BookId::fromString($bookId), authors: $example['authors']);
+            $command = new ModifyBook(BookId::fromString($bookId), authors: $example['authors']);
 
             $I->sendCommand($command);
 
@@ -60,7 +60,7 @@ class UpdateBookCest
     {
         foreach ($this->bookProvider() as $book) {
             $bookId = $book['uuid'];
-            $command = new ModifyAttributesOfBook(BookId::fromString($bookId), genres: $example['genres']);
+            $command = new ModifyBook(BookId::fromString($bookId), genres: $example['genres']);
 
             $I->sendCommand($command);
 
@@ -81,7 +81,7 @@ class UpdateBookCest
     {
         foreach ($this->bookProvider() as $book) {
             $bookId = $book['uuid'];
-            $command = new ModifyAttributesOfBook(BookId::fromString($bookId), tags: $example['tags']);
+            $command = new ModifyBook(BookId::fromString($bookId), tags: $example['tags']);
 
             $I->sendCommand($command);
 

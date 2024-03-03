@@ -25,6 +25,6 @@ class JsonApiErrorRenderer implements ErrorRendererInterface
 
         return (string)json_encode([
             'errors' => $document
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     }
 }

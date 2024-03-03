@@ -13,7 +13,7 @@ readonly class RetrieveBook implements QueryInterface
     ) {
     }
 
-    public static function fromBookId(string $id): self
+    public static function fromString(string $id): self
     {
         return new self(BookId::fromString($id));
     }

@@ -19,7 +19,7 @@ class DeleteBookCest
     {
         $this->store($I, $example);
         $bookId = $example['uuid'];
-        $I->sendCommand(DestroyBook::fromBookId($bookId));
+        $I->sendCommand(DestroyBook::fromString($bookId));
         $I->dontSeeInDatabase('books', ['uuid' => $bookId]);
     }
 

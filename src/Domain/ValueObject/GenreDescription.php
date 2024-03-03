@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use Override;
+
 readonly class GenreDescription extends AbstractValueObject
 {
     protected function __construct(protected string $genreDescription)
@@ -21,7 +23,7 @@ readonly class GenreDescription extends AbstractValueObject
         return new self(GenreEnum::from($genreAbbreviation->get())->description());
     }
 
-    #[\Override] public function get(): string
+    #[Override] public function get(): string
     {
         return $this->genreDescription;
     }

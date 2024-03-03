@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Http\Response;
+namespace App\Infrastructure\Http\Response\Book;
 
 use App\Domain\Dto\BookDto;
 use App\Domain\Dto\DtoInterface;
 use App\Infrastructure\Http\Response\Component\Relationship;
+use App\Infrastructure\Http\Response\SingleResourceResponse;
 use Override;
 
-class BookSuccessResponse extends AbstractSuccessResponse
+class BookResponse extends SingleResourceResponse
 {
     /** @var BookDto */
     protected DtoInterface|BookDto $dto;
