@@ -6,12 +6,25 @@ namespace App\Infrastructure\Http\Response\Book;
 
 use App\Domain\Dto\BookDto;
 use App\Domain\Dto\DtoInterface;
-use App\Infrastructure\Http\Response\CollectionResourceResponse;
+use App\Infrastructure\Http\Response\CollectionResponse;
 use App\Infrastructure\Http\Response\Component\Relationship;
 use Override;
 
-class BookCollectionResponse extends CollectionResourceResponse
+class CollectionOfBooksResponse extends CollectionResponse
 {
+    use IncludeResourcesOfBook;
+
+    /**
+     * @return string[]
+     */
+    public function resourceIds(): array
+    {
+        return array_map(
+            static fn(DtoInterface|BookDto $dto) => $dto->id,
+            $this->collection
+        );
+    }
+
     #[Override] protected function type(): string
     {
         return 'books';

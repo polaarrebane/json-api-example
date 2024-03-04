@@ -6,21 +6,19 @@ namespace App\Infrastructure\Http\Request\Book\ReadBookRequest;
 
 use App\Application\Query\QueryInterface;
 use App\Application\Query\RetrieveBook;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
+use App\Infrastructure\Http\Request\Book\BookRequest;
 use Override;
-use Psr\Http\Message\ServerRequestInterface;
 
-final class ReadBookRequest implements RequestInterface
+final class ReadBookRequest extends BookRequest
 {
     protected string $resourceId;
 
-    public function __construct(
-        ServerRequestInterface $serverRequest,
-        protected RequestValidator $requestValidator,
-    ) {
-        $this->resourceId = $serverRequest->getAttribute('resource_id');
-        $this->validate();
+    /** @var string[]  */
+    protected array $canBeIncluded = ['authors', 'genres'];
+
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
     }
 
     #[Override]

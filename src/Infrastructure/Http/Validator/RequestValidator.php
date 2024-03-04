@@ -76,6 +76,11 @@ class RequestValidator
         Assert::true($this->authorService->exists([$authorId]), 'Author not found');
     }
 
+    public function validaGenreAbbreviation(string $genreAbbreviation): void
+    {
+        Assert::oneOf($genreAbbreviation, GenreEnum::values(), 'Unknown genre: ' . $genreAbbreviation);
+    }
+
     /**
      * @param RelationshipItem[] $genres
      * @return void

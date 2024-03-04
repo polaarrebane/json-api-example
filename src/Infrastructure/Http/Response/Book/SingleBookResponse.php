@@ -10,8 +10,10 @@ use App\Infrastructure\Http\Response\Component\Relationship;
 use App\Infrastructure\Http\Response\SingleResourceResponse;
 use Override;
 
-class BookResponse extends SingleResourceResponse
+class SingleBookResponse extends SingleResourceResponse
 {
+    use IncludeResourcesOfBook;
+
     /** @var BookDto */
     protected DtoInterface|BookDto $dto;
 

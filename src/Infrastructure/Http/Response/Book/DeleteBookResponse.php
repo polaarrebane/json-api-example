@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http\Response\Book;
 
 use Psr\Http\Message\ResponseInterface;
+use Teapot\StatusCode\RFC\RFC7231;
 
-class BookCreatedResponse extends BookResponse
+class DeleteBookResponse extends SingleBookResponse
 {
     public function toPsrResponse(): ResponseInterface
     {
-        return parent::toPsrResponse()->withHeader('Location', $this->linkToSelf());
+        return $this->response->withStatus(RFC7231::NO_CONTENT);
     }
 }

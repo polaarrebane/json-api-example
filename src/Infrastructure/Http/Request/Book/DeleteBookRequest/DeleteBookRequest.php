@@ -6,21 +6,16 @@ namespace App\Infrastructure\Http\Request\Book\DeleteBookRequest;
 
 use App\Application\Command\CommandInterface;
 use App\Application\Command\DestroyBook;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
+use App\Infrastructure\Http\Request\Book\BookRequest;
 use Override;
-use Psr\Http\Message\ServerRequestInterface;
 
-final class DeleteBookRequest implements RequestInterface
+final class DeleteBookRequest extends BookRequest
 {
     protected string $resourceId;
 
-    public function __construct(
-        ServerRequestInterface $serverRequest,
-        protected RequestValidator $requestValidator,
-    ) {
-        $this->resourceId = $serverRequest->getAttribute('resource_id');
-        $this->validate();
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
     }
 
     #[Override]

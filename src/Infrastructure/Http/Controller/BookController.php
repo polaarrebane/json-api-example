@@ -4,91 +4,85 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Controller;
 
+use App\Application\Query\RetrieveAuthorsOfBooks;
 use App\Application\Query\RetrieveBook;
+use App\Application\Query\RetrieveGenresOfBooks;
+use App\Infrastructure\Http\Request\Book\BookRequest;
 use App\Infrastructure\Http\Request\Book\CreateBookRequest\CreateBookRequest;
 use App\Infrastructure\Http\Request\Book\DeleteBookRequest\DeleteBookRequest;
 use App\Infrastructure\Http\Request\Book\ListBooksRequest\ListBooksRequest;
 use App\Infrastructure\Http\Request\Book\ReadBookRequest\ReadBookRequest;
 use App\Infrastructure\Http\Request\Book\UpdateBookRequest\UpdateBookRequest;
-use App\Infrastructure\Http\Response\Book\BookCollectionResponse;
-use App\Infrastructure\Http\Response\Book\BookCreatedResponse;
-use App\Infrastructure\Http\Response\Book\BookResponse;
-use DI\Attribute\Inject;
-use DI\Container;
-use League\Config\Configuration;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Teapot\StatusCode\RFC\RFC7231;
+use App\Infrastructure\Http\Response\ApiResponseInterface;
+use App\Infrastructure\Http\Response\Book\CollectionOfBooksResponse;
+use App\Infrastructure\Http\Response\Book\CreateBookResponse;
+use App\Infrastructure\Http\Response\Book\DeleteBookResponse;
+use App\Infrastructure\Http\Response\Book\SingleBookResponse;
+use App\Infrastructure\Http\Response\Book\UpdateBookResponse;
 
 class BookController extends AbstractController
 {
-    #[Inject]
-    protected Configuration $config;
-
-    #[Inject]
-    protected Container $container;
-
-    public function create(ServerRequestInterface $request): ResponseInterface
+    public function create(CreateBookRequest $createBookRequest, CreateBookResponse $bookResponse): ApiResponseInterface
     {
-        $createBookRequest = $this->container->make(CreateBookRequest::class, ['serverRequest' => $request]);
         $createdBookId = $this->commandBus->send($createBookRequest->toBusRequest());
         $bookDto = $this->queryBus->send(RetrieveBook::fromString($createdBookId));
+        $bookResponse->setResource($bookDto);
+        $this->includeResources($createBookRequest, $bookResponse);
 
-        return $this->container->make(BookCreatedResponse::class)
-            ->withResource($bookDto)
-            ->toPsrResponse()
-            ->withStatus(RFC7231::CREATED);
+        return $bookResponse;
     }
 
-    public function list(BookCollectionResponse $bookResponse): ResponseInterface
+    public function list(ListBooksRequest $listBookRequest, CollectionOfBooksResponse $bookResponse): ApiResponseInterface
     {
-        $listBookRequest = $this->container->make(ListBooksRequest::class);
         $bookDtoCollection = $this->queryBus->send($listBookRequest->toBusRequest());
+        $bookResponse->setCollection($bookDtoCollection);
+        $this->includeResources($listBookRequest, $bookResponse);
 
-        return $bookResponse
-            ->withCollection($bookDtoCollection)
-            ->toPsrResponse();
+        return $bookResponse;
     }
 
-    public function read(ServerRequestInterface $request, string $id): ResponseInterface
+    public function read(ReadBookRequest $readBookRequest, SingleBookResponse $bookResponse): ApiResponseInterface
     {
-        $readBookRequest = $this->container->make(
-            ReadBookRequest::class,
-            ['serverRequest' => $request->withAttribute('resource_id', $id)]
-        );
-
         $bookDto = $this->queryBus->send($readBookRequest->toBusRequest());
+        $bookResponse->setResource($bookDto);
+        $this->includeResources($readBookRequest, $bookResponse);
 
-        return $this->container->make(BookResponse::class)
-            ->withResource($bookDto)
-            ->toPsrResponse();
+        return $bookResponse;
     }
 
-    public function update(ServerRequestInterface $request, string $id): ResponseInterface
+    public function update(UpdateBookRequest $updateBookRequest, UpdateBookResponse $bookResponse): ApiResponseInterface
     {
-        $updateBookRequest = $this->container->make(
-            UpdateBookRequest::class,
-            ['serverRequest' => $request->withAttribute('resource_id', $id)]
-        );
-        $command = $updateBookRequest->toBusRequest();
-        $this->commandBus->send($command);
-        $bookDto = $this->queryBus->send(RetrieveBook::fromString($id));
+        $this->commandBus->send($updateBookRequest->toBusRequest());
+        $bookDto = $this->queryBus->send(RetrieveBook::fromString($updateBookRequest->getResourceId()));
+        $bookResponse->setResource($bookDto);
+        $this->includeResources($updateBookRequest, $bookResponse);
 
-        return $this->container->make(BookResponse::class)
-            ->withResource($bookDto)
-            ->toPsrResponse()
-            ->withStatus(RFC7231::ACCEPTED);
+        return $bookResponse;
     }
 
-    public function delete(ServerRequestInterface $request, ResponseInterface $response, string $id): ResponseInterface
+    public function delete(DeleteBookRequest $deleteBookRequest, DeleteBookResponse $bookResponse): ApiResponseInterface
     {
-        $deleteBookRequest = $this->container->make(
-            DeleteBookRequest::class,
-            ['serverRequest' => $request->withAttribute('resource_id', $id)]
-        );
-
         $this->commandBus->send($deleteBookRequest->toBusRequest());
 
-        return $response->withStatus(RFC7231::NO_CONTENT);
+        return $bookResponse;
+    }
+
+    protected function includeResources(
+        BookRequest $bookRequest,
+        SingleBookResponse|CollectionOfBooksResponse $bookResponse
+    ): void {
+        if ($bookRequest->shouldInclude('authors')) {
+            $query = RetrieveAuthorsOfBooks::fromArrayOfString($bookResponse->resourceIds());
+            $authorsOfBooks = $this->queryBus->send($query);
+            $sparseFieldset = $bookRequest->getSparseFieldsets()['authors'] ?? null;
+            $bookResponse->addAuthors($authorsOfBooks, $sparseFieldset);
+        }
+
+        if ($bookRequest->shouldInclude('genres')) {
+            $query = RetrieveGenresOfBooks::fromArrayOfString($bookResponse->resourceIds());
+            $genresOfBooks = $this->queryBus->send($query);
+            $sparseFieldset = $bookRequest->getSparseFieldsets()['genres'] ?? null;
+            $bookResponse->addGenres($genresOfBooks, $sparseFieldset);
+        }
     }
 }
