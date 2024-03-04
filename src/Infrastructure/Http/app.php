@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Infrastructure\Http\ErrorHandler\JsonApiErrorRenderer;
+use App\Infrastructure\Http\InvocationStrategy\ApiInvocationStrategy;
 use App\Infrastructure\Http\Middleware\InclusionOfRelatedResourcesMiddleware;
 use App\Infrastructure\Http\Middleware\JsonApiContentNegotiationMiddleware;
 use DI\Bridge\Slim\Bridge;
@@ -20,6 +21,10 @@ $config = $container->get(Configuration::class);
 $slim = Bridge::create($container);
 $slim->setBasePath($config->get('app.api_base_path'));
 
+
+$routeCollector = $slim->getRouteCollector();
+$routeCollector->setDefaultInvocationStrategy($container->make(ApiInvocationStrategy::class));
+
 $slim->addRoutingMiddleware();
 $slim = routes($slim);
 
@@ -31,5 +36,6 @@ $errorMiddleware = $slim->addErrorMiddleware(true, false, false);
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType(JSON_API_CONTENT_TYPE);
 $errorHandler->registerErrorRenderer(JSON_API_CONTENT_TYPE, JsonApiErrorRenderer::class);
+
 
 $slim->run();

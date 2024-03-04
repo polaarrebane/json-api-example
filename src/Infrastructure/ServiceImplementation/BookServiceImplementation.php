@@ -6,10 +6,14 @@ namespace App\Infrastructure\ServiceImplementation;
 
 use App\Application\Command\DestroyBook;
 use App\Application\Query\ListBooks;
+use App\Application\Query\RetrieveAuthorsOfBooks;
+use App\Application\Query\RetrieveGenresOfBooks;
+use App\Domain\Dto\AuthorDto;
 use App\Domain\Dto\BookDto;
+use App\Domain\Dto\GenreDto;
 use App\Domain\Service\BookServiceInterface as BookDomainService;
+use App\Domain\ValueObject\BookId;
 use App\Infrastructure\Database\Entity\Author;
-use App\Infrastructure\Database\Entity\Book;
 use App\Infrastructure\Database\Entity\Book as BookDbEntity;
 use App\Infrastructure\Database\Entity\Genre;
 use App\Infrastructure\Database\Entity\Tag;
@@ -32,7 +36,7 @@ class BookServiceImplementation implements BookDomainService, BookInfrastructure
     public function handleDestroy(DestroyBook $command): void
     {
         $orm = $this->container->make(ORM::class);
-        $book = $orm->getRepository(Book::class)->findByPK($command->bookId->get());
+        $book = $orm->getRepository(BookDbEntity::class)->findByPK($command->bookId->get());
 
         if ($book) {
             $em = new EntityManager($orm);
@@ -54,7 +58,7 @@ class BookServiceImplementation implements BookDomainService, BookInfrastructure
             ->fetchAll();
 
         return array_map(
-            static fn(Book $book) => new BookDto(
+            static fn(BookDbEntity $book) => new BookDto(
                 id: $book->getUuid()->toString(),
                 title: $book->getTitle(),
                 description: $book->getDescription(),
@@ -95,5 +99,80 @@ class BookServiceImplementation implements BookDomainService, BookInfrastructure
             ->count();
 
         return $count === count($id);
+    }
+
+    #[Override]
+    public function handleRetrieveAuthorsOfBooks(RetrieveAuthorsOfBooks $query): array
+    {
+        if ($query->bookIds === []) {
+            return [];
+        }
+
+        $orm = $this->container->make(ORM::class);
+
+        /** @var BookDbEntity[] $books */
+        $books = $orm
+            ->getRepository(BookDbEntity::class)
+            ->select()
+            ->load('authors')
+            ->where([
+                'uuid' => ['in' => new Parameter(array_map(static fn(BookId $bookId) => $bookId->get(), $query->bookIds))]
+            ])
+            ->fetchAll();
+
+        if (!$books) {
+            return [];
+        }
+
+        $result = [];
+
+        /** @var BookDbEntity $book */
+        foreach ($books as $book) {
+            foreach ($book->getAuthors() as $author) {
+                $result[] = new AuthorDto(
+                    id: $author->getUuid()->toString(),
+                    name: $author->getName(),
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    #[Override] public function handleRetrieveGenresOfBooks(RetrieveGenresOfBooks $query): array
+    {
+        if ($query->bookIds === []) {
+            return [];
+        }
+
+        $orm = $this->container->make(ORM::class);
+
+        /** @var BookDbEntity[] $books */
+        $books = $orm
+            ->getRepository(BookDbEntity::class)
+            ->select()
+            ->load('genres')
+            ->where([
+                'uuid' => ['in' => new Parameter(array_map(static fn(BookId $bookId) => $bookId->get(), $query->bookIds))]
+            ])
+            ->fetchAll();
+
+        if (!$books) {
+            return [];
+        }
+
+        $result = [];
+
+        /** @var BookDbEntity $book */
+        foreach ($books as $book) {
+            foreach ($book->getGenres() as $genre) {
+                $result[] = new GenreDto(
+                    abbreviation: $genre->getAbbreviation(),
+                    description: $genre->getDescription(),
+                );
+            }
+        }
+
+        return $result;
     }
 }

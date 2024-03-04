@@ -2,32 +2,32 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Http\Response\Author;
+namespace App\Infrastructure\Http\Response\Genre;
 
-use App\Domain\Dto\AuthorDto;
 use App\Domain\Dto\DtoInterface;
+use App\Domain\Dto\GenreDto;
 use App\Infrastructure\Http\Response\SingleResourceResponse;
 use Override;
 
-class AuthorResponse extends SingleResourceResponse
+class GenreResponse extends SingleResourceResponse
 {
-    /** @var AuthorDto */
-    protected DtoInterface|AuthorDto $dto;
+    /** @var GenreDto */
+    protected DtoInterface|GenreDto $dto;
 
     #[Override] protected function id(): string
     {
-        return $this->dto->id;
+        return $this->dto->abbreviation;
     }
 
     #[Override] protected function type(): string
     {
-        return 'authors';
+        return 'genres';
     }
 
     #[Override] protected function getAttributes(): array
     {
         return [
-            'name' => $this->dto->name,
+            'description' => $this->dto->description,
         ];
     }
 

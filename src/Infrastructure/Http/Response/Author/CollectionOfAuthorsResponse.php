@@ -6,14 +6,22 @@ namespace App\Infrastructure\Http\Response\Author;
 
 use App\Domain\Dto\AuthorDto;
 use App\Domain\Dto\DtoInterface;
-use App\Infrastructure\Http\Response\CollectionResourceResponse;
+use App\Infrastructure\Http\Response\CollectionResponse;
 use Override;
 
-class AuthorCollectionResponse extends CollectionResourceResponse
+class CollectionOfAuthorsResponse extends CollectionResponse
 {
     #[Override] protected function type(): string
     {
         return 'authors';
+    }
+
+    #[Override] public function resourceIds(): array
+    {
+        return array_map(
+            static fn(DtoInterface|AuthorDto $dto) => $dto->id,
+            $this->collection
+        );
     }
 
     /**

@@ -6,14 +6,22 @@ namespace App\Infrastructure\Http\Response\Genre;
 
 use App\Domain\Dto\DtoInterface;
 use App\Domain\Dto\GenreDto;
-use App\Infrastructure\Http\Response\CollectionResourceResponse;
+use App\Infrastructure\Http\Response\CollectionResponse;
 use Override;
 
-class GenreCollectionResponse extends CollectionResourceResponse
+class GenreCollectionResponse extends CollectionResponse
 {
     #[Override] protected function type(): string
     {
         return 'genres';
+    }
+
+    #[Override] public function resourceIds(): array
+    {
+        return array_map(
+            static fn(DtoInterface|GenreDto $dto) => $dto->abbreviation,
+            $this->collection
+        );
     }
 
     /**

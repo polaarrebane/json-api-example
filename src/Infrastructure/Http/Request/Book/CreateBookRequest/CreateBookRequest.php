@@ -6,29 +6,20 @@ namespace App\Infrastructure\Http\Request\Book\CreateBookRequest;
 
 use App\Application\Command\AddNewBook;
 use App\Application\Command\CommandInterface;
+use App\Infrastructure\Http\Request\Book\BookRequest;
 use App\Infrastructure\Http\Request\Book\CreateBookRequest\Component\Resource;
-use App\Infrastructure\Http\Request\Mapper;
 use App\Infrastructure\Http\Request\RelationshipItem;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
 use App\Infrastructure\Http\Validator\Type;
-use Psr\Http\Message\ServerRequestInterface;
 use Webmozart\Assert\Assert;
 
-final class CreateBookRequest implements RequestInterface
+final class CreateBookRequest extends BookRequest
 {
     protected Resource $resource;
 
     protected string $type = Type::BOOKS->value;
 
-    public function __construct(
-        ServerRequestInterface $serverRequest,
-        protected Mapper $mapper,
-        protected RequestValidator $requestValidator,
-    ) {
-        $this->resource = $this->mapper->map(Resource::class, $serverRequest);
-        $this->validate();
-    }
+    /** @var string[]  */
+    protected array $canBeIncluded = ['authors', 'genres'];
 
     public function toBusRequest(): CommandInterface
     {

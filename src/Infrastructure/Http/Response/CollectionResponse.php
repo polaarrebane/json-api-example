@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http\Response;
 
 use App\Domain\Dto\DtoInterface;
-use League\Config\Configuration;
-use Psr\Http\Message\ResponseInterface;
-use Slim\Psr7\Response;
 use Spatie\Url\Url;
 
-abstract class CollectionResourceResponse extends AbstractResponse
+abstract class CollectionResponse extends AbstractApiResponse
 {
     /** @var DtoInterface[] */
     protected array $collection = [];
@@ -19,7 +16,7 @@ abstract class CollectionResourceResponse extends AbstractResponse
      * @param DtoInterface[] $collection
      * @return $this
      */
-    public function withCollection(array $collection): self
+    public function setCollection(array $collection): self
     {
         $this->collection = $collection;
 
@@ -37,13 +34,19 @@ abstract class CollectionResourceResponse extends AbstractResponse
      */
     protected function toArray(): array
     {
-        return [
+        $result = [
             'links' => $this->getLinks(),
             'data' => array_map(
                 fn(DtoInterface $dto) => $this->dtoToArray($dto),
                 $this->collection
             ),
         ];
+
+        if (isset($this->included)) {
+            $result['included'] = $this->included;
+        }
+
+        return $result;
     }
 
     protected function linkToSelf(): string

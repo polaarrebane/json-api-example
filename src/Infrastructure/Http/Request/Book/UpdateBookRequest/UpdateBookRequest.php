@@ -7,16 +7,14 @@ namespace App\Infrastructure\Http\Request\Book\UpdateBookRequest;
 use App\Application\Command\CommandInterface;
 use App\Application\Command\ModifyBook;
 use App\Domain\ValueObject\BookId;
+use App\Infrastructure\Http\Request\AbstractRequest;
+use App\Infrastructure\Http\Request\Book\BookRequest;
 use App\Infrastructure\Http\Request\Book\UpdateBookRequest\Component\Resource;
-use App\Infrastructure\Http\Request\Mapper;
 use App\Infrastructure\Http\Request\RelationshipItem;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
 use App\Infrastructure\Http\Validator\Type;
-use Psr\Http\Message\ServerRequestInterface;
 use Webmozart\Assert\Assert;
 
-final class UpdateBookRequest implements RequestInterface
+final class UpdateBookRequest extends BookRequest
 {
     protected Resource $resource;
 
@@ -24,14 +22,12 @@ final class UpdateBookRequest implements RequestInterface
 
     protected string $resourceId;
 
-    public function __construct(
-        ServerRequestInterface $serverRequest,
-        protected Mapper $mapper,
-        protected RequestValidator $requestValidator,
-    ) {
-        $this->resource = $this->mapper->map(Resource::class, $serverRequest);
-        $this->resourceId = $serverRequest->getAttribute('resource_id');
-        $this->validate();
+    /** @var string[]  */
+    protected array $canBeIncluded = ['authors', 'genres'];
+
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
     }
 
     public function toBusRequest(): CommandInterface

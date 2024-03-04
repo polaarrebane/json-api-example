@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Response;
 
+use DI\Container;
 use League\Config\Configuration;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Response;
 
-abstract class AbstractResponse implements ApiResponseInterface
+abstract class AbstractApiResponse implements ApiResponseInterface
 {
     final public function __construct(
         protected Response $response,
         protected Configuration $config,
+        protected Container $container,
     ) {
     }
+
+    /**
+     * @return string[]
+     */
+    abstract public function resourceIds(): array;
 
     public function toPsrResponse(): ResponseInterface
     {

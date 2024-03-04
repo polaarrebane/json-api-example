@@ -5,27 +5,27 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http\Controller;
 
 use App\Infrastructure\Http\Request\Genre\ListGenresRequest\ListGenresRequest;
+use App\Infrastructure\Http\Request\Genre\ReadGenreRequest\ReadGenreRequest;
+use App\Infrastructure\Http\Response\ApiResponseInterface;
 use App\Infrastructure\Http\Response\Genre\GenreCollectionResponse;
-use DI\Attribute\Inject;
-use DI\Container;
-use League\Config\Configuration;
+use App\Infrastructure\Http\Response\Genre\GenreResponse;
 use Psr\Http\Message\ResponseInterface;
 
 class GenreController extends AbstractController
 {
-    #[Inject]
-    protected Configuration $config;
-
-    #[Inject]
-    protected Container $container;
-
-    public function list(GenreCollectionResponse $genreResponse): ResponseInterface
+    public function list(ListGenresRequest $listGenreRequest, GenreCollectionResponse $genreResponse): ApiResponseInterface
     {
-        $listGenreRequest = $this->container->make(ListGenresRequest::class);
         $genreDtoCollection = $this->queryBus->send($listGenreRequest->toBusRequest());
+        $genreResponse->setCollection($genreDtoCollection);
 
-        return $genreResponse
-            ->withCollection($genreDtoCollection)
-            ->toPsrResponse();
+        return $genreResponse;
+    }
+
+    public function read(ReadGenreRequest $readGenreRequest, GenreResponse $genreResponse): ApiResponseInterface
+    {
+        $genreDto = $this->queryBus->send($readGenreRequest->toBusRequest());
+        $genreResponse->setResource($genreDto);
+
+        return $genreResponse;
     }
 }

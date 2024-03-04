@@ -10,11 +10,22 @@ use RuntimeException;
 use Slim\Psr7\Response;
 use Spatie\Url\Url;
 
-abstract class SingleResourceResponse extends AbstractResponse
+abstract class SingleResourceResponse extends AbstractApiResponse
 {
     protected DtoInterface $dto;
 
-    public function withResource(DtoInterface $dto): self
+    /** @var array<string, mixed> */
+    protected array $included;
+
+    /**
+     * @return string[]
+     */
+    public function resourceIds(): array
+    {
+        return [$this->id()];
+    }
+
+    public function setResource(DtoInterface $dto): self
     {
         $this->dto = $dto;
 
@@ -44,20 +55,29 @@ abstract class SingleResourceResponse extends AbstractResponse
     /**
      * @return array<string, mixed>
      */
-    protected function toArray(): array
+    protected function toArray(bool $wrap = true): array
     {
         if (!isset($this->dto)) {
             throw new RuntimeException('The resource is missed');
         }
 
-        return [
-            'data' => [
-                'type' => $this->type(),
-                'id' => $this->id(),
-                'attributes' => $this->getAttributes(),
-                'relationships' => $this->getRelationships(),
-            ],
-            'links' => $this->getLinks(),
+        $result = [
+            'type' => $this->type(),
+            'id' => $this->id(),
+            'attributes' => $this->getAttributes(),
+            'relationships' => $this->getRelationships(),
         ];
+
+        if ($wrap) {
+            $result = ['data' => $result];
+        }
+
+        $result['links'] = $this->getLinks();
+
+        if (isset($this->included)) {
+            $result['included'] = $this->included;
+        }
+
+        return $result;
     }
 }
