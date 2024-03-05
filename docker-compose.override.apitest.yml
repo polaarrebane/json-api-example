@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    hostname: 'ishual_books_postgres'
+    environment:
+      POSTGRES_DB: ishual_books
+      POSTGRES_USER: ishual_books
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - ishual_net
+    volumes: !override
+      - ./tests/_data/ishual_books_apitest_init_dump.sql:/docker-entrypoint-initdb.d/init.sql
