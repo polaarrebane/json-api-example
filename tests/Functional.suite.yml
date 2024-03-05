@@ -3,8 +3,8 @@ modules:
     enabled:
         - Asserts
         - Db:
-            dsn: 'pgsql:host=localhost;dbname=ishual_books_test'
-            user: 'ishual_books'
+            dsn: 'pgsql:host=ishual_books_postgres;dbname=ishual_books_test'
+            user: ishual_books
             password: 'password'
             dump: 'tests/_data/ishual_books.dump'
             populate: true # run populator before all tests

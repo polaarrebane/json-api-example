@@ -4,20 +4,36 @@ services:
 
   db:
     image: postgres
+    hostname: 'ishual_books_postgres'
     environment:
-      POSTGRES_DB: ishual_books
-      POSTGRES_USER: ishual_books
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB_DBNAME}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
     ports:
       - "5432:5432"
+    networks:
+      - ishual_net
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
 
-  db_test:
-    image: postgres
-    environment:
-      POSTGRES_DB: ishual_books_test
-      POSTGRES_USER: ishual_books
-      POSTGRES_PASSWORD: password
+  nginx:
+    image: nginx:latest
+    volumes:
+      - .:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "5432:5432"
-    profiles:
-      - donotstart
+      - "80:80"
+    networks:
+      - ishual_net
+
+  php-fpm:
+    build: "./docker/php-fpm"
+    hostname: 'ishual_php_fpm'
+    volumes:
+      - ".:/app"
+    networks:
+      - ishual_net
+
+networks:
+  ishual_net:
+    driver: bridge
