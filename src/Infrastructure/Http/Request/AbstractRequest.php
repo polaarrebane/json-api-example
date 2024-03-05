@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Request;
 
-use App\Infrastructure\Http\Exception\EndpointDoesNotSupportTheIncludeParameter;
+use App\Infrastructure\Http\Exception\Include\EndpointDoesNotSupportInclusionOfResource;
+use App\Infrastructure\Http\Exception\Include\EndpointDoesNotSupportTheIncludeParameter;
+use App\Infrastructure\Http\Exception\Include\IncorrectInclusionField;
 use App\Infrastructure\Http\Validator\RequestValidator;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
-use RuntimeException;
 
 abstract class AbstractRequest implements RequestInterface
 {
@@ -58,19 +59,24 @@ abstract class AbstractRequest implements RequestInterface
     {
         $include = $this->serverRequest->getAttribute('include', []);
 
-        if (!empty(array_diff($include, $this->canBeIncluded))) {
+        if (
+            (empty($this->canBeIncluded)) &&
+            !empty($this->serverRequest->getAttribute('include'))
+        ) {
             throw new EndpointDoesNotSupportTheIncludeParameter($this->serverRequest);
         }
 
-        $t = $this->getSparseFieldsets();
+        if (!empty(array_diff($include, $this->canBeIncluded))) {
+            throw new EndpointDoesNotSupportInclusionOfResource($this->serverRequest);
+        }
 
-        if (array_diff(array_keys($t), array_keys($this->allowedSparseFieldsets)) !== []) {
-            throw new RuntimeException('UNKNOWN FIELD');
+        if (array_diff(array_keys($this->getSparseFieldsets()), array_keys($this->allowedSparseFieldsets)) !== []) {
+            throw new IncorrectInclusionField($this->serverRequest);
         }
 
         foreach ($this->getSparseFieldsets() as $relation => $fieldset) {
             if (array_diff($fieldset, $this->allowedSparseFieldsets[$relation]) !== []) {
-                throw new RuntimeException('UNKNOWN FIELD');
+                throw new IncorrectInclusionField($this->serverRequest);
             }
         }
     }

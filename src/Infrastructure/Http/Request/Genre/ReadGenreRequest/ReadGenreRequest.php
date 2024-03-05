@@ -6,8 +6,10 @@ namespace App\Infrastructure\Http\Request\Genre\ReadGenreRequest;
 
 use App\Application\Query\QueryInterface;
 use App\Application\Query\RetrieveGenre;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\Book\BookRequest;
 use Override;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class ReadGenreRequest extends BookRequest
 {
@@ -21,6 +23,14 @@ final class ReadGenreRequest extends BookRequest
 
     protected function validate(): void
     {
-        $this->requestValidator->validaGenreAbbreviation($this->resourceId);
+        try {
+            $this->requestValidator->validaGenreAbbreviation($this->resourceId);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
     }
 }

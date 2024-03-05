@@ -6,14 +6,16 @@ namespace App\Infrastructure\Http\Request\Book\ReadBookRequest;
 
 use App\Application\Query\QueryInterface;
 use App\Application\Query\RetrieveBook;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\Book\BookRequest;
 use Override;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class ReadBookRequest extends BookRequest
 {
     protected string $resourceId;
 
-    /** @var string[]  */
+    /** @var string[] */
     protected array $canBeIncluded = ['authors', 'genres'];
 
     public function getResourceId(): string
@@ -29,6 +31,14 @@ final class ReadBookRequest extends BookRequest
 
     protected function validate(): void
     {
-        $this->requestValidator->validateBookId($this->resourceId);
+        try {
+            $this->requestValidator->validateBookId($this->resourceId);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
     }
 }

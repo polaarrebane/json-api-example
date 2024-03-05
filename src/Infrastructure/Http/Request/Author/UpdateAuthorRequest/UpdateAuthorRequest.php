@@ -7,14 +7,12 @@ namespace App\Infrastructure\Http\Request\Author\UpdateAuthorRequest;
 use App\Application\Command\CommandInterface;
 use App\Application\Command\ModifyAuthor;
 use App\Domain\ValueObject\AuthorId;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\AbstractRequest;
 use App\Infrastructure\Http\Request\Author\UpdateAuthorRequest\Component\Resource;
-use App\Infrastructure\Http\Request\Mapper;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
 use App\Infrastructure\Http\Validator\Type;
-use Psr\Http\Message\ServerRequestInterface;
 use Webmozart\Assert\Assert;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class UpdateAuthorRequest extends AbstractRequest
 {
@@ -47,6 +45,14 @@ final class UpdateAuthorRequest extends AbstractRequest
             'The identifier from the path and the identifier from the document body must be identical.'
         );
 
-        $this->requestValidator->validaAuthorId($this->resource->id);
+        try {
+            $this->requestValidator->validaAuthorId($this->resource->id);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
     }
 }

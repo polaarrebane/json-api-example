@@ -16,9 +16,9 @@ use App\Infrastructure\Database\Entity\Author;
 use App\Infrastructure\Database\Entity\Book as BookDbEntity;
 use App\Infrastructure\Database\Entity\Genre;
 use App\Infrastructure\Database\Entity\Tag;
+use App\Infrastructure\Database\Exception\NotFoundException;
 use Cycle\ORM\ORM;
 use DI\Container;
-use InvalidArgumentException;
 
 class BookSqlReadService
 {
@@ -42,7 +42,10 @@ class BookSqlReadService
             ->fetchOne();
 
         if (is_null($bookDbEntity)) {
-            throw new InvalidArgumentException();
+            throw new NotFoundException(
+                entity: 'Book',
+                id: $bookId->toUuid()->toString()
+            );
         }
 
         $authorIds = array_map(

@@ -6,8 +6,10 @@ namespace App\Infrastructure\Http\Request\Book\DeleteBookRequest;
 
 use App\Application\Command\CommandInterface;
 use App\Application\Command\DestroyBook;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\Book\BookRequest;
 use Override;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class DeleteBookRequest extends BookRequest
 {
@@ -26,6 +28,14 @@ final class DeleteBookRequest extends BookRequest
 
     protected function validate(): void
     {
-        $this->requestValidator->validateBookId($this->resourceId);
+        try {
+            $this->requestValidator->validateBookId($this->resourceId);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
     }
 }

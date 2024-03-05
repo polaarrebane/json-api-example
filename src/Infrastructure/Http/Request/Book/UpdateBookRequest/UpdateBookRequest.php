@@ -7,12 +7,13 @@ namespace App\Infrastructure\Http\Request\Book\UpdateBookRequest;
 use App\Application\Command\CommandInterface;
 use App\Application\Command\ModifyBook;
 use App\Domain\ValueObject\BookId;
-use App\Infrastructure\Http\Request\AbstractRequest;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\Book\BookRequest;
 use App\Infrastructure\Http\Request\Book\UpdateBookRequest\Component\Resource;
 use App\Infrastructure\Http\Request\RelationshipItem;
 use App\Infrastructure\Http\Validator\Type;
 use Webmozart\Assert\Assert;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class UpdateBookRequest extends BookRequest
 {
@@ -22,7 +23,7 @@ final class UpdateBookRequest extends BookRequest
 
     protected string $resourceId;
 
-    /** @var string[]  */
+    /** @var string[] */
     protected array $canBeIncluded = ['authors', 'genres'];
 
     public function getResourceId(): string
@@ -67,7 +68,15 @@ final class UpdateBookRequest extends BookRequest
             'The identifier from the path and the identifier from the document body must be identical.'
         );
 
-        $this->requestValidator->validateBookId($this->resource->id);
+        try {
+            $this->requestValidator->validateBookId($this->resource->id);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
 
         if ($this->resource->attributes?->cover) {
             $this->requestValidator->validateCover($this->resource->attributes->cover);

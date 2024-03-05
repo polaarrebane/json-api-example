@@ -23,8 +23,8 @@ class RequestValidator
 
     public function validateBookId(string $bookId): void
     {
-        Assert::true(Uuid::isValid($bookId), 'An ID of a book should be a valid uuid');
-        Assert::true($this->bookService->exists($bookId), 'Book not found');
+        Assert::true(Uuid::isValid($bookId), "An ID of a book should be a valid uuid, passed: $bookId");
+        Assert::true($this->bookService->exists($bookId), "Book with ID $bookId is not found");
     }
 
     public function validateCover(string $cover): void
@@ -64,16 +64,16 @@ class RequestValidator
                 Type::AUTHORS->value,
                 'Type of item should be "' . Type::AUTHORS->value . '"'
             );
-            Assert::uuid($author->id, 'An ID of an author should be a valid uuid');
+            Assert::uuid($author->id, "An ID of an author should be a valid uuid, passed: " . $author->id);
         }
 
-        Assert::true($this->authorService->exists(array_column($authorIds, 'id')), 'Author not found');
+        Assert::true($this->authorService->exists(array_column($authorIds, 'id')), 'One of the authors is not found');
     }
 
     public function validaAuthorId(string $authorId): void
     {
-        Assert::true(Uuid::isValid($authorId), 'An ID of an author should be a valid uuid');
-        Assert::true($this->authorService->exists([$authorId]), 'Author not found');
+        Assert::true(Uuid::isValid($authorId), "An ID of an author should be a valid uuid, passed: $authorId");
+        Assert::true($this->authorService->exists([$authorId]), "Author with ID $authorId is not found");
     }
 
     public function validaGenreAbbreviation(string $genreAbbreviation): void
