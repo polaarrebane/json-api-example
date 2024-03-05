@@ -8,9 +8,9 @@ use App\Domain\Entity\Author as AuthorDomainEntity;
 use App\Domain\ValueObject\AuthorId;
 use App\Domain\ValueObject\AuthorName;
 use App\Infrastructure\Database\Entity\Author as AuthorDbEntity;
+use App\Infrastructure\Database\Exception\NotFoundException;
 use Cycle\ORM\ORM;
 use DI\Container;
-use InvalidArgumentException;
 
 class AuthorSqlReadService
 {
@@ -29,7 +29,10 @@ class AuthorSqlReadService
             ->findByPK($authorId->toUuid());
 
         if (is_null($authorDbEntity)) {
-            throw new InvalidArgumentException();
+            throw new NotFoundException(
+                entity: 'Author',
+                id: $authorId->toUuid()->toString()
+            );
         }
 
         return new AuthorDomainEntity(

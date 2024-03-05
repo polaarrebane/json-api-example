@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Http\Exception;
+namespace App\Infrastructure\Http\Exception\Include;
 
+use App\Infrastructure\Http\Exception\ErrorCodesEnum;
+use App\Infrastructure\Http\Exception\AbstractHttpException;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Teapot\StatusCode\RFC\RFC7231;
 use Throwable;
 
-class EndpointDoesNotSupportTheIncludeParameter extends HttpException
+class EndpointDoesNotSupportTheIncludeParameter extends AbstractHttpException
 {
     public function __construct(
         ServerRequestInterface $request,
@@ -19,9 +21,9 @@ class EndpointDoesNotSupportTheIncludeParameter extends HttpException
     ) {
         $request = $request
             ->withAttribute('exception_uuid', Uuid::uuid4()->toString())
-            ->withAttribute('exception_title', "An endpoint does not support the include parameter")
+            ->withAttribute('exception_title', "This endpoint does not support the include parameter")
             ->withAttribute('exception_detail', "See https://jsonapi.org/format/#fetching-includes for details")
-            ->withAttribute('exception_code', ErrorCodesEnum::AN_ENDPOINT_DOES_NOT_SUPPORT_THE_INCLUDE_PARAMETER->value);
+            ->withAttribute('exception_code', ErrorCodesEnum::ENDPOINT_DOES_NOT_SUPPORT_THE_INCLUDE_PARAMETER->value);
 
         parent::__construct($request, $message, $code, $previous);
     }

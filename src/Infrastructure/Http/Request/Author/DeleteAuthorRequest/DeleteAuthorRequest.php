@@ -6,11 +6,10 @@ namespace App\Infrastructure\Http\Request\Author\DeleteAuthorRequest;
 
 use App\Application\Command\CommandInterface;
 use App\Application\Command\DestroyAuthor;
+use App\Infrastructure\Http\Exception\ResourceNotFoundException;
 use App\Infrastructure\Http\Request\AbstractRequest;
-use App\Infrastructure\Http\Request\RequestInterface;
-use App\Infrastructure\Http\Validator\RequestValidator;
 use Override;
-use Psr\Http\Message\ServerRequestInterface;
+use Webmozart\Assert\InvalidArgumentException;
 
 final class DeleteAuthorRequest extends AbstractRequest
 {
@@ -24,6 +23,14 @@ final class DeleteAuthorRequest extends AbstractRequest
 
     protected function validate(): void
     {
-        $this->requestValidator->validaAuthorId($this->resourceId);
+        try {
+            $this->requestValidator->validaAuthorId($this->resourceId);
+        } catch (InvalidArgumentException $exception) {
+            throw new ResourceNotFoundException(
+                request: $this->serverRequest,
+                detail: $exception->getMessage(),
+                previous: $exception
+            );
+        }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\ErrorHandler;
 
-use App\Infrastructure\Http\Exception\HttpException;
+use App\Infrastructure\Http\Exception\AbstractHttpException;
 use Slim\Interfaces\ErrorRendererInterface;
 use Throwable;
 
@@ -16,7 +16,7 @@ class JsonApiErrorRenderer implements ErrorRendererInterface
             'status' => $exception->getMessage()
         ];
 
-        if ($exception instanceof HttpException) {
+        if ($exception instanceof AbstractHttpException) {
             $document['id'] = $exception->getRequest()->getAttribute('exception_uuid', '');
             $document['code'] = $exception->getRequest()->getAttribute('exception_code', '');
             $document['title'] = $exception->getRequest()->getAttribute('exception_title', '');

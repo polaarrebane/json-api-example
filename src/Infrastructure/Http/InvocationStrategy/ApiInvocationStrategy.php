@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\InvocationStrategy;
 
+use App\Infrastructure\Http\Exception\AbstractHttpException;
+use App\Infrastructure\Http\Exception\InternalServerError;
+use App\Infrastructure\Http\Exception\ValidationException;
 use App\Infrastructure\Http\Response\AbstractApiResponse;
 use DI\Attribute\Inject;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
 use ReflectionMethod;
 use Slim\Handlers\Strategies\RequestResponseArgs;
+use Webmozart\Assert\InvalidArgumentException;
 
 class ApiInvocationStrategy extends RequestResponseArgs
 {
@@ -21,10 +26,11 @@ class ApiInvocationStrategy extends RequestResponseArgs
     protected Container $container;
 
     /**
-     * Invoke a route callable with request, response and all route parameters
-     * as individual arguments.
-     *
+     * @param callable $callable
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param array<string, string> $routeArguments
+     * @return ResponseInterface
      */
     public function __invoke(
         callable $callable,

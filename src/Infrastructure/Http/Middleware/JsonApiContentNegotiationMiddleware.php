@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Middleware;
 
-use App\Infrastructure\Http\Exception\NotAcceptable;
-use App\Infrastructure\Http\Exception\UnsupportedMediaType;
+use App\Infrastructure\Http\Exception\ContentNegotiation\NotAcceptable;
+use App\Infrastructure\Http\Exception\ContentNegotiation\UnsupportedMediaType;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Psr\Http\Message\ResponseInterface as Response;
 
 class JsonApiContentNegotiationMiddleware
 {

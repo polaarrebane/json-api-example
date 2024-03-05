@@ -8,9 +8,9 @@ use App\Domain\Entity\Genre as GenreDomainEntity;
 use App\Domain\ValueObject\GenreAbbreviation;
 use App\Domain\ValueObject\GenreDescription;
 use App\Infrastructure\Database\Entity\Genre as GenreDbEntity;
+use App\Infrastructure\Database\Exception\NotFoundException;
 use Cycle\ORM\ORM;
 use DI\Container;
-use InvalidArgumentException;
 
 class GenreSqlReadService
 {
@@ -31,7 +31,10 @@ class GenreSqlReadService
             ->fetchOne();
 
         if (is_null($genreDbEntity)) {
-            throw new InvalidArgumentException();
+            throw new NotFoundException(
+                entity: 'Genre',
+                id: $genreAbbreviation->get()
+            );
         }
 
         $abbreviation = GenreAbbreviation::fromString($genreDbEntity->getAbbreviation());
